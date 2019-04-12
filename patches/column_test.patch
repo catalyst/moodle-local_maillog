@@ -1,0 +1,25 @@
+diff --git a/totara/reportbuilder/tests/column_test.php b/totara/reportbuilder/tests/column_test.php
+index ef8e0ec3f28..40c514a0d3f 100644
+--- a/totara/reportbuilder/tests/column_test.php
++++ b/totara/reportbuilder/tests/column_test.php
+@@ -710,6 +710,12 @@ class totara_reportbuilder_column_testcase extends reportcache_advanced_testcase
+         parent::tearDown();
+     }
+ 
++    // local/maillog data
++    protected $mail_log = array(
++        'id' => 1, 'userid' => 1, 'fromobj' => '"noreply@eugeneisdiebaas.com"', 'toaddress' => 'eugene@catalyst.net.nz', 'fromaddress' => 'noreply@eugeneisdiebaas.com',
++        'subject' => 'this is a test', 'messagetext' => 'this is a test for realz', 'timesent' => '1416859984'
++    );
++
+     protected function setUp() {
+         global $DB;
+         parent::setup();
+@@ -833,6 +839,7 @@ class totara_reportbuilder_column_testcase extends reportcache_advanced_testcase
+             'totara_connect_clients' => array($this->totara_connect_clients_data),
+             'tool_customlang' => array($this->tool_customlang_data),
+             'tool_customlang_components' => array($this->tool_customlang_components_data),
++            'mail_log' => array($this->mail_log),
+         )));
+     }
+ 
