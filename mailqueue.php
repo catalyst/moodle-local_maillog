@@ -96,7 +96,10 @@ echo $output->heading($strheading, 1);
 #echo html_writer::tag('p', html_writer::link("{$CFG->wwwroot}/my/", "<< " . get_string('mylearning', 'totara_core')));
 
 $countfiltered = $report->get_filtered_count();
-$countall = $report->get_full_count();
+$countall = 0;
+if($report->can_display_total_count()) {
+    $countall = $report->get_full_count();
+}
 
 // Display heading including filtering stats.
 if ($countfiltered == $countall) {

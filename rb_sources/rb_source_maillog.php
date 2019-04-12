@@ -80,9 +80,6 @@ class rb_source_maillog extends rb_base_source {
 
         // include some standard joins
         $this->add_user_table_to_joinlist($joinlist, 'base', 'userid');
-        $this->add_position_tables_to_joinlist($joinlist, 'base', 'userid');
-        // requires the position_assignment join
-        $this->add_manager_tables_to_joinlist($joinlist, 'position_assignment', 'reportstoid');
 
         return $joinlist;
     }
@@ -159,8 +156,6 @@ class rb_source_maillog extends rb_base_source {
 
         // include some standard columns
         $this->add_user_fields_to_columns($columnoptions);
-        $this->add_position_fields_to_columns($columnoptions);
-        $this->add_manager_fields_to_columns($columnoptions);
 
         return $columnoptions;
     }
@@ -234,8 +229,6 @@ class rb_source_maillog extends rb_base_source {
 
         // include some standard filters
         $this->add_user_fields_to_filters($filteroptions);
-        $this->add_position_fields_to_filters($filteroptions);
-        $this->add_manager_fields_to_filters($filteroptions);
 
         return $filteroptions;
     }
