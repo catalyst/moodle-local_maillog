@@ -67,8 +67,8 @@ if ($action == 'delete') {
     require_sesskey();
 
     \local_maillog\helper::delete($logids);
-
-    totara_set_notification(get_string('queueitemsdeleted', 'local_maillog'), $returnurl, array('class' => 'notifysuccess'));
+    
+    redirect($returnurl, get_string('queueitemsdeleted', 'local_maillog'));
 } else if ($action == 'send') {
     $confirm = optional_param('confirm', false, PARAM_BOOL);
     if (!$confirm) {
@@ -83,6 +83,6 @@ if ($action == 'delete') {
 
     \local_maillog\helper::schedule_send($logids);
 
-    totara_set_notification(get_string('queueitemsscheduled', 'local_maillog'), $returnurl, array('class' => 'notifysuccess'));
+    redirect($returnurl, get_string('queueitemsscheduled', 'local_maillog'));
 }
 
