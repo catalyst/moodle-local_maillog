@@ -15,12 +15,13 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
+ * Process queue actions.
  *
- * @package    local_maillog
- * @copyright  2015 Eugene Venter
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package   local_maillog
+ * @author    Eugene Venter <eugene@catalyst.net.nz>
+ * @copyright 2013 onwards Catalyst IT Ltd
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
 require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
 
 $context = context_system::instance();

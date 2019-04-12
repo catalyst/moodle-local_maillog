@@ -15,10 +15,12 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
+ * Mail log capabilities.
  *
- * @package local_maillog
- * @author  Eugene Venter <eugene@catalyst.net.nz>
- * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package   local_maillog
+ * @author    Eugene Venter <eugene@catalyst.net.nz>
+ * @copyright 2013 onwards Catalyst IT Ltd
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 $capabilities = array(
