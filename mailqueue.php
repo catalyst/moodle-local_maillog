@@ -53,7 +53,12 @@ $strheading = get_string('mailqueue', 'local_maillog');
 $data = array(
     'queued' => 1,
 );
-if (!$report = reportbuilder_get_embedded_report('local_maillog_mailqueue', $data, false, $sid)) {
+$rb_config = new rb_config();
+$rb_config->set_sid($sid)
+    ->set_nocache(false)
+    ->set_embeddata($data);
+
+if (!$report = reportbuilder::create_embedded('local_maillog_mailqueue', $rb_config)) {
     print_error('error:couldnotgenerateembeddedreport', 'totara_reportbuilder');
 }
 

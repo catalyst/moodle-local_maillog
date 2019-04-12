@@ -54,6 +54,7 @@ class rb_source_maillog extends rb_base_source {
         $this->defaultfilters = $this->define_defaultfilters();
         $this->requiredcolumns = $this->define_requiredcolumns();
         $this->sourcetitle = get_string('sourcetitle', 'rb_source_maillog');
+        $this->usedcomponents[] = 'local_maillog';
 
         parent::__construct();
     }
@@ -79,7 +80,7 @@ class rb_source_maillog extends rb_base_source {
         $joinlist = array();
 
         // include some standard joins
-        $this->add_user_table_to_joinlist($joinlist, 'base', 'userid');
+        $this->add_core_user_tables($joinlist, 'base', 'userid');
 
         return $joinlist;
     }
@@ -90,31 +91,36 @@ class rb_source_maillog extends rb_base_source {
                 'maillog',
                 'toaddress',
                 get_string('toaddress', 'rb_source_maillog'),
-                "base.toaddress"
+                "base.toaddress",
+                array('displayfunc' => 'user_email_unobscured')
             ),
             new rb_column_option(
                 'maillog',
                 'fromaddress',
                 get_string('fromaddress', 'rb_source_maillog'),
-                "base.fromaddress"
+                "base.fromaddress",
+                array('displayfunc' => 'user_email_unobscured')
             ),
             new rb_column_option(
                 'maillog',
                 'subject',
                 get_string('subject', 'rb_source_maillog'),
-                "base.subject"
+                "base.subject",
+                array('displayfunc' => 'format_string')
             ),
             new rb_column_option(
                 'maillog',
                 'messagetext',
                 get_string('messagetext', 'rb_source_maillog'),
-                "base.messagetext"
+                "base.messagetext",
+                array('displayfunc' => 'plaintext')
             ),
             new rb_column_option(
                 'maillog',
                 'attachname',
                 get_string('attachname', 'rb_source_maillog'),
-                "base.attachname"
+                "base.attachname",
+                array('displayfunc' => 'format_string')
             ),
             new rb_column_option(
                 'maillog',
@@ -128,13 +134,14 @@ class rb_source_maillog extends rb_base_source {
                 'success',
                 get_string('success', 'rb_source_maillog'),
                 'base.success',
-                array('displayfunc' => 'yes_no')
+                array('displayfunc' => 'yes_or_no')
             ),
             new rb_column_option(
                 'maillog',
                 'returnmsg',
                 get_string('returnmsg', 'rb_source_maillog'),
-                'base.returnmsg'
+                'base.returnmsg',
+                array('displayfunc' => 'plaintext')
             ),
             new rb_column_option(
                 'maillog',
@@ -155,7 +162,7 @@ class rb_source_maillog extends rb_base_source {
         );
 
         // include some standard columns
-        $this->add_user_fields_to_columns($columnoptions);
+        $this->add_core_user_columns($columnoptions);
 
         return $columnoptions;
     }
@@ -228,7 +235,7 @@ class rb_source_maillog extends rb_base_source {
         );
 
         // include some standard filters
-        $this->add_user_fields_to_filters($filteroptions);
+        $this->add_core_user_filters($filteroptions);
 
         return $filteroptions;
     }
@@ -356,23 +363,6 @@ class rb_source_maillog extends rb_base_source {
         );
         return $requiredcolumns;
     }
-
-
-    //
-    //
-    // Source specific column display methods
-    //
-    //
-
-    // Generate log item checkbox
-    function rb_display_maillog_queuestatus($status, $row) {
-        return get_string('status_'.$status, 'rb_source_maillog');
-    }
-
-    function rb_display_maillog_checkbox($id, $row) {
-        return html_writer::checkbox('local_maillog_items['.$id.']', $id, false, '', array('id' => 'local_maillog', 'class' => "selectbox"));
-    }
-
 
     //
     //
