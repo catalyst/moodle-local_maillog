@@ -23,7 +23,7 @@
  */
 
 global $CFG;
-require_once($CFG->dirroot.'/totara/reportbuilder/classes/rb_base_content.php');
+require_once($CFG->dirroot.'/totara/reportbuilder/classes/rb/content/base.php');
 require_once($CFG->dirroot.'/local/maillog/classes/helper.php');  // so we can use the consts.
 
 class rb_local_maillog_mailqueue_embedded extends rb_base_embedded {
