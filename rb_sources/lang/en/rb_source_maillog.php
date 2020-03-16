@@ -1,6 +1,7 @@
 <?php
 
 $string['sourcetitle'] = 'Mail log';
+$string['sourcelabel'] = 'Mail log';
 $string['attachname'] = 'Attachment name';
 $string['logid'] = 'Log ID';
 $string['messagetext'] = 'Message text';

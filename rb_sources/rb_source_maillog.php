@@ -1,4 +1,5 @@
 <?php
+
 /*
  * This file is part of Totara LMS
  *
@@ -54,6 +55,7 @@ class rb_source_maillog extends rb_base_source {
         $this->defaultfilters = $this->define_defaultfilters();
         $this->requiredcolumns = $this->define_requiredcolumns();
         $this->sourcetitle = get_string('sourcetitle', 'rb_source_maillog');
+        $this->sourcelabel = get_string('sourcelabel', 'rb_source_maillog');
         $this->usedcomponents[] = 'local_maillog';
 
         parent::__construct();
