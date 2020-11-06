@@ -52,7 +52,4 @@ $PAGE->set_heading($strheading);
 
 echo $OUTPUT->header();
 echo $OUTPUT->heading($strheading, 1);
-
-
-
 echo $OUTPUT->footer();

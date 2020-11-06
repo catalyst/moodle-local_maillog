@@ -139,20 +139,29 @@ class helper {
 		$count = 0;
 		if ($rs->valid()) {
 			foreach ($rs as $mail) {
-				$user = \totara_core\totara_user::get_user($mail->userid);
-				if ($mail->userid == \totara_core\totara_user::EXTERNAL_USER) {
-					$user->email = $mail->toaddress;
-					$user->firstname = $mail->toaddress;
+				// If totara, use totara calls, else moodle user object.
+				if (class_exists('totara_core\totara_user')) {
+					$user = \totara_core\totara_user::get_user($mail->userid);
+					if ($mail->userid == \totara_core\totara_user::EXTERNAL_USER) {
+						$user->email = $mail->toaddress;
+						$user->firstname = $mail->toaddress;
+					}
+				} else {
+					$user = \core_user::get_user($mail->userid);
 				}
+
 				if (!empty($mail->attachment)) {
 					$attachmentfile = $fs->get_file($context->id, 'local_maillog', 'queuefiles', $mail->id, "/{$mail->id}/", $mail->attachname);
 					if (!empty($attachmentfile)) {
 						$mail->attachment = $attachmentfile->copy_content_to_temp('maillog', "{$mail->id}_");  // do this so we can get an absolute path to the file
 					}
 				}
+				$from = json_decode($mail->fromobj);
+				$from->queueapproved = true;
+
 				\email_to_user(
 					$user,
-					json_decode($mail->fromobj),
+					$from,
 					$mail->subject,
 					$mail->messagetext,
 					$mail->messagehtml,
@@ -162,7 +171,6 @@ class helper {
 					$mail->replyto,
 					$mail->replytoname,
 					$mail->wordwrapwidth,
-					$queueapproved=true
 				);
 				if (!empty($mail->attachment)) {
 					unlink($mail->attachment);

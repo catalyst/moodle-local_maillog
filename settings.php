@@ -16,7 +16,7 @@
 
 /**
  * Settings for Maillog plugin.
- * 
+ *
  * @package   local_maillog
  * @author    Eugene Venter <eugene@catalyst.net.nz>
  * @copyright 2013 onwards Catalyst IT Ltd
@@ -38,5 +38,8 @@ if ($hassiteconfig) { // needs this condition or there is error on login page
     $daysoptions = array_combine(array_values($daysoptions), $daysoptions);  // fix index
     $settings->add(new admin_setting_configselect('local_maillog/maxdays',
         new lang_string('maxdays', 'local_maillog'), new lang_string('maxdaysinfo', 'local_maillog'), 7, $daysoptions));
-}
 
+    // Add log report to reports.
+    $ADMIN->add('reports', new admin_externalpage('maillogreport',
+        get_string('pluginname', 'local_maillog'), new moodle_url('/local/maillog/log_report.php')));
+}
