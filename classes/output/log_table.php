@@ -63,10 +63,18 @@ class log_table extends \table_sql {
     }
 
     public function col_content($row) {
-        if ($this->is_downloading()) {
-            return $row->messagetext;
+        if (!empty($row->messagehtml)) {
+            if ($this->is_downloading()) {
+                return $row->messagehtml;
+            } else {
+                return shorten_text($row->messagehtml, 100);
+            }
+        } else {
+            if ($this->is_downloading()) {
+                return $row->messagetext;
+            }
+            return shorten_text($row->messagetext, 100);
         }
-        return shorten_text($row->messagetext, 100);
     }
 
     public function col_hasattachment($row) {

@@ -43,7 +43,7 @@ if (!$table->is_downloading()) {
 }
 
 // Setup the SQL query and display
-$fields = 'userid, subject, messagetext, attachname, timesent, success';
+$fields = 'userid, subject, messagetext, messagehtml, attachname, timesent, success';
 $from = '{mail_log}';
 $where = 'queuestatus = 0';
 $table->set_sql($fields, $from, $where);
