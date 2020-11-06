@@ -40,6 +40,7 @@ $string['maillog:managequeue'] = 'Manage queue';
 $string['mailqueue'] = 'Mail Queue';
 $string['maxdays'] = 'Max days to keep emails in log/queue';
 $string['maxdaysinfo'] = 'Any mail log entries older than the configured amount of days will be purged.';
+$string['originscript'] = 'Originating script';
 $string['pendingsend'] = 'Pending send';
 $string['queued'] = 'Queued';
 $string['queuemails'] = 'Queue emails';

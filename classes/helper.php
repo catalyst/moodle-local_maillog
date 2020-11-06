@@ -50,11 +50,21 @@ class helper {
 	}
 
 	static function log_mail($success, $msg, $user, $from, $subject, $messagetext, $messagehtml, $attachment, $attachname, $usetrueaddress, $replyto, $replytoname, $wordwrapwidth, $queuestatus=0) {
-		global $DB;
+		global $CFG, $DB;
 
 		if (!\get_config('local_maillog', 'logmails')) {
 			return true;
 		}
+
+		// Find originating script. It will be the layer with the first email_to_user call.
+		$stack = debug_backtrace();
+		foreach ($stack as $call) {
+			if ($call['function'] === 'email_to_user') {
+				$layer = $call;
+				break;
+			}
+		}
+		$originscript = '/' . str_replace($CFG->dirroot . '/', '', $layer['file']) . ':' . $layer['line'];
 
 		$transaction = $DB->start_delegated_transaction();
 
@@ -77,6 +87,7 @@ class helper {
 		$todb->success = $success ? 1 : 0;
 		$todb->returnmsg = substr($msg, 0, 255);
 		$todb->queuestatus = $queuestatus;
+		$todb->originscript = $originscript;
 
 		$newrecordid = $DB->insert_record('mail_log', $todb);
 

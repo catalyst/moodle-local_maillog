@@ -30,20 +30,24 @@ class log_table extends \table_sql {
         parent::__construct($uniqueid);
 
         $this->set_attribute('class', 'generaltable generalbox');
-        $this->define_columns(array(
+        $cols = [
             'to',
             'subject',
             'content',
             'hasattachment',
             'timesent',
+            'originscript',
             'status',
-        ));
+        ];
+
+        $this->define_columns($cols);
         $this->define_headers(array(
                 get_string('to'),
                 get_string('subject', 'hub'),
                 get_string('content'),
                 get_string('hasattachment', 'local_maillog'),
                 get_string('timesent', 'local_maillog'),
+                get_string('originscript', 'local_maillog'),
                 get_string('status'),
             )
         );
@@ -87,5 +91,9 @@ class log_table extends \table_sql {
 
     public function col_status($row) {
         return $row->success ? get_string('sent', 'local_maillog') : get_string('failed', 'local_maillog');
+    }
+
+    public function col_originscript($row) {
+        return $row->originscript ?? 'Unknown';
     }
 }
