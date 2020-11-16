@@ -25,7 +25,8 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version   = 20170111100;
+// Extra 0 due to broken previous version number.
+$plugin->version   = 20201106000;
 $plugin->requires  = 2015051100;
 $plugin->cron      = 0;
 $plugin->component = 'local_maillog';
