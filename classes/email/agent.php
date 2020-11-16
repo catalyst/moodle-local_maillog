@@ -27,11 +27,11 @@ defined('MOODLE_INTERNAL') || die();
 
 use core\email;
 
-class manager extends email\manager {
+class manager extends email\agent {
 
     protected $queueapproved = false;
 
-    protected function mail_validity_checks(): ?bool {
+    protected function email_validity_checks(): ?bool {
         global $CFG;
 
         // Check if this message is queue approved. This is set in the $from object.
@@ -116,17 +116,17 @@ class manager extends email\manager {
         }
 
         // Otherwise, standard function.
-        return parent::mail_validity_checks();
+        return parent::email_validity_checks();
     }
 
-    protected function mail_send(\moodle_phpmailer $mail): bool {
-        $sent = parent::mail_send($mail);
+    protected function email_send(): bool {
+        $sent = parent::email_send();
         if ($sent) {
             \local_maillog\helper::log_mail(
                 true,
                 '',
                 $this->user,
-                $mail->From,
+                $this->mail->From,
                 $this->subject,
                 $this->messagetext,
                 $this->messagehtml,
@@ -142,7 +142,7 @@ class manager extends email\manager {
                 false,
                 'mail->Send() returned false',
                 $this->user,
-                $mail->From,
+                $this->mail->From,
                 $this->subject,
                 $this->messagetext,
                 $this->messagehtml,
