@@ -27,7 +27,7 @@ defined('MOODLE_INTERNAL') || die();
 
 use core\email;
 
-class manager extends email\agent {
+class agent extends email\agent {
 
     protected $queueapproved = false;
 
