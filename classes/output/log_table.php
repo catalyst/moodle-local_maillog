@@ -62,8 +62,7 @@ class log_table extends \table_sql {
     }
 
     public function col_to($row) {
-        $user = \core_user::get_user($row->userid);
-        return $user->email;
+        return $row->toaddress;
     }
 
     public function col_content($row) {

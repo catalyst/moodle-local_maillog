@@ -57,14 +57,16 @@ class helper {
 		}
 
 		// Find originating script. It will be the layer with the first email_to_user call.
-		$stack = debug_backtrace();
-		foreach ($stack as $call) {
-			if ($call['function'] === 'email_to_user') {
-				$layer = $call;
-				break;
+		$stack = debug_backtrace(false);
+		$origin = $stack[0];
+
+		foreach ($stack as $depth => $call) {
+			if ($call['function'] == 'message_send') {
+				$origin = $call;
 			}
 		}
-		$originscript = '/' . str_replace($CFG->dirroot . '/', '', $layer['file']) . ':' . $layer['line'];
+
+		$originscript = gethostname() . ':' . str_replace($CFG->dirroot . '/', '', $origin['file']) . ':' . $origin['line'];
 
 		$transaction = $DB->start_delegated_transaction();
 
