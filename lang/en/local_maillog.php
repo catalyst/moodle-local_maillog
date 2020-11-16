@@ -54,3 +54,8 @@ $string['task:purgelog'] = 'Purge mail log';
 $string['task:sendscheduled'] = 'Send scheduled emails';
 $string['timesent'] = 'Time sent';
 $string['withselected'] = 'With selected:';
+
+// Privacy Strings.
+$string['privacy:metadata:mail_log:userid'] = 'The id that the email was sent to.';
+$string['privacy:metadata:mail_log:toaddress'] = 'The email address that the email was sent to.';
+$string['privacy:metadata:mail_log'] = 'Stores information on sent emails from the system.';
