@@ -55,7 +55,7 @@ class log_table extends \table_sql {
         $systemcontext = \context_system::instance();
         $this->context = $systemcontext;
         $this->collapsible(false);
-        $this->sortable(false);
+        $this->sortable(false, 'timesent', SORT_DESC);
         $this->pageable(true);
         $this->is_downloadable(true);
         $this->define_baseurl($url);
