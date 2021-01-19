@@ -26,3 +26,4 @@ $string['type_maillog'] = 'Mail log';
 $string['task:purgelog'] = 'Purge mail log';
 $string['task:sendscheduled'] = 'Send scheduled emails';
 $string['withselected'] = 'With selected:';
+$string['sourcesummary'] = 'Mail log';

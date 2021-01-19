@@ -56,6 +56,7 @@ class rb_source_maillog extends rb_base_source {
         $this->requiredcolumns = $this->define_requiredcolumns();
         $this->sourcetitle = get_string('sourcetitle', 'rb_source_maillog');
         $this->sourcelabel = get_string('sourcelabel', 'rb_source_maillog');
+        $this->sourcesummary = get_string('sourcesummary', 'rb_source_maillog');
         $this->usedcomponents[] = 'local_maillog';
 
         parent::__construct();
