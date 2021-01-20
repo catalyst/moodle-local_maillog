@@ -21,3 +21,4 @@ $string['toaddress'] = 'To address';
 $string['timesent'] = 'Time sent';
 $string['timequeued'] = 'Time queued';
 $string['type_maillog'] = 'Mail log';
+$string['sourcesummary'] = 'Mail log';
