@@ -36,14 +36,14 @@ $queuemails = get_config('local_maillog', 'queuemails');
 if ($queuemails) {
     $queuemailsdate = get_config('local_maillog', 'queuemailsdate');
     $a = new stdClass();
-    $a->hourspassed = round((time() - $queuemailsdate) / 3600);
     $a->now = $now;
+    if ($queuemailsdate) {
+        $a->hourspassed = round((time() - $queuemailsdate) / 3600);
+    } else {
+        $a->hourspassed = 'unknown';
+    }
     printf (get_string('critical', 'local_maillog', $a));
-
 } else {
     printf ("OK");
 }
-
-
-
 
