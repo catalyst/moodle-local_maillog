@@ -9,7 +9,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version   = 20170111100;
+$plugin->version   = 20170111101;
 $plugin->requires  = 2015051100;
 $plugin->cron      = 0;
 $plugin->component = 'local_maillog';
