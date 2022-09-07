@@ -22,7 +22,7 @@
  */
 
 if (defined('MOODLE_INTERNAL')) {
-    if (get_config('local_maillog', 'version') == '20190317101') {
+    if (get_config('local_maillog', 'version') <= '20190317101') {
         set_config('version', '2022082600', 'local_maillog');
     }
 }
