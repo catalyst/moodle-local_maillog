@@ -47,7 +47,7 @@ class helper {
 		}
 	}
 
-	static function log_mail($success, $msg, $user, $from, $subject, $messagetext, $messagehtml, $attachment, $attachname, $usetrueaddress, $replyto, $replytoname, $wordwrapwidth, $queuestatus=0) {
+	static function log_mail($success, $msg, $user, $from, $subject, $messagetext, $messagehtml, $attachment, $attachname, $usetrueaddress, $replyto, $replytoname, $wordwrapwidth, $attachment_list, $queuestatus=0) {
 		global $DB;
 
 		if (!\get_config('local_maillog', 'logmails')) {
@@ -74,6 +74,7 @@ class helper {
 		$todb->timesent = time();
 		$todb->success = $success ? 1 : 0;
 		$todb->returnmsg = substr($msg, 0, 255);
+		$todb->attachment_list = json_encode($attachment_list);
 		$todb->queuestatus = $queuestatus;
 
 		$newrecordid = $DB->insert_record('mail_log', $todb);
@@ -160,6 +161,8 @@ class helper {
 					$mail->replyto,
 					$mail->replytoname,
 					$mail->wordwrapwidth,
+					json_decode($mail->attachment_list),
+
 					$queueapproved=true
 				);
 				if (!empty($mail->attachment)) {
