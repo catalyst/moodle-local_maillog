@@ -31,6 +31,7 @@ function xmldb_local_csp_upgrade($oldversion) {
         // Conditionally launch add field and set the default to LEGACY for existing seminars
         if (!$dbman->field_exists($table, $field)) {
             $dbman->add_field($table, $field);
+        }
         upgrade_plugin_savepoint(true, 2022090900, 'local', 'maillog');
     }
 }
