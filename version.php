@@ -21,7 +21,7 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-if (defined('MOODLE_INTERNAL')) {
+if (defined('MOODLE_INTERNAL') && !during_initial_install()) {
     if (get_config('local_maillog', 'version') >= '10000000000') {
         set_config('version', '2022082600', 'local_maillog');
     }
