@@ -20,7 +20,7 @@
 
 defined('MOODLE_INTERNAL') || die;
 
-function xmldb_local_csp_upgrade($oldversion) {
+function xmldb_local_maillog_upgrade($oldversion) {
     global $DB;
     $dbman = $DB->get_manager();
 
@@ -34,4 +34,5 @@ function xmldb_local_csp_upgrade($oldversion) {
         }
         upgrade_plugin_savepoint(true, 2022090900, 'local', 'maillog');
     }
+    return true;
 }
