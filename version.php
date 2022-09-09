@@ -27,7 +27,7 @@ if (defined('MOODLE_INTERNAL') && !during_initial_install()) {
     }
 }
 $plugin->version   = 2022090900;
-$plugin->requires  = 2022042605;
+$plugin->requires  = 2022042601;
 $plugin->cron      = 0;
 $plugin->component = 'local_maillog';
 
