@@ -24,7 +24,7 @@ function xmldb_local_maillog_upgrade($oldversion) {
     global $DB;
     $dbman = $DB->get_manager();
 
-    if ($oldversion < 2022090900) {
+    if ($oldversion < 2022090901) {
         $table = new xmldb_table('mail_log');
         $field = new xmldb_field('attachment_list', XMLDB_TYPE_TEXT, null, null, null, null, null, 'returnmsg');
 
@@ -32,7 +32,7 @@ function xmldb_local_maillog_upgrade($oldversion) {
         if (!$dbman->field_exists($table, $field)) {
             $dbman->add_field($table, $field);
         }
-        upgrade_plugin_savepoint(true, 2022090900, 'local', 'maillog');
+        upgrade_plugin_savepoint(true, 2022090901, 'local', 'maillog');
     }
     return true;
 }
