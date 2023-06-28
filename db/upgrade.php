@@ -34,5 +34,14 @@ function xmldb_local_maillog_upgrade($oldversion) {
         }
         upgrade_plugin_savepoint(true, 2022090901, 'local', 'maillog');
     }
+    if ($oldversion < 2023062800) {
+        $table = new xmldb_table('mail_log');
+        $field = new xmldb_field('override_fullname_display', XMLDB_TYPE_INTEGER, '1', null, XMLDB_NOTNULL, null, '0', 'attachment_list');
+
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+        upgrade_plugin_savepoint(true, 2023062800, 'local', 'maillog');
+    }
     return true;
 }

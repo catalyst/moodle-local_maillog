@@ -1,10 +1,10 @@
-diff --git a/totara/reportbuilder/tests/column_test.php b/totara/reportbuilder/tests/column_test.php
-index ef8e0ec3f28..40c514a0d3f 100644
---- a/totara/reportbuilder/tests/column_test.php
-+++ b/totara/reportbuilder/tests/column_test.php
-@@ -710,6 +710,12 @@ class totara_reportbuilder_column_testcase extends reportcache_advanced_testcase
-         parent::tearDown();
-     }
+diff --git a/server/totara/reportbuilder/tests/column_test.php b/server/totara/reportbuilder/tests/column_test.php
+index 45e395e903b..5fdb58faf04 100644
+--- a/server/totara/reportbuilder/tests/column_test.php
++++ b/server/totara/reportbuilder/tests/column_test.php
+@@ -580,6 +580,12 @@ class totara_reportbuilder_column_testcase extends reportcache_advanced_testcase
+         'time_created' =>  1332153671, 'time_status' => 1332153671,
+     );
  
 +    // local/maillog data
 +    protected $mail_log = array(
@@ -12,13 +12,13 @@ index ef8e0ec3f28..40c514a0d3f 100644
 +        'subject' => 'this is a test', 'messagetext' => 'this is a test for realz', 'timesent' => '1416859984'
 +    );
 +
-     protected function setUp() {
-         global $DB;
-         parent::setup();
-@@ -833,6 +839,7 @@ class totara_reportbuilder_column_testcase extends reportcache_advanced_testcase
-             'totara_connect_clients' => array($this->totara_connect_clients_data),
-             'tool_customlang' => array($this->tool_customlang_data),
+ 
+     // NOTE: Do not add more data above - you can now avoid core changes by defining the
+     // {@link phpunit_column_test_add_data()} method in your source instead.
+@@ -830,6 +836,7 @@ class totara_reportbuilder_column_testcase extends reportcache_advanced_testcase
              'tool_customlang_components' => array($this->tool_customlang_components_data),
+             'totara_competency_assignments' => array($this->totara_competency_assignments_data),
+             'totara_competency_achievement' => array($this->totara_competency_achievement_data),
 +            'mail_log' => array($this->mail_log),
          )));
      }

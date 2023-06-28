@@ -1,83 +1,90 @@
-diff --git a/lib/moodlelib.php b/lib/moodlelib.php
-index ea17ba05b2e..74f42aa22f8 100644
---- a/lib/moodlelib.php
-+++ b/lib/moodlelib.php
-@@ -6023,7 +6023,7 @@ function generate_email_messageid($localpart = null) {
+diff --git a/server/lib/moodlelib.php b/server/lib/moodlelib.php
+index e6b11547862..d3e559faa54 100644
+--- a/server/lib/moodlelib.php
++++ b/server/lib/moodlelib.php
+@@ -6151,11 +6164,13 @@ function generate_email_messageid($localpart = null) {
+  * @param array $attachment_list Array of attachments when attaching multiple attachments. Name should be used as the key.
+  * @param int $wordwrapwidth custom word wrap width, default 79
+  * @param bool $override_fullname_display If true then the name will be firstname followed by lastname rather than adhering to fullnamedisplay.
++ * @param bool $queueapproved Used by local_maillog for sending queued emails.
+  *
   * @return bool Returns true if mail was sent OK and false if there was an error.
   */
  function email_to_user($user, $from, $subject, $messagetext, $messagehtml = '', $attachment = '', $attachname = '',
--                       $usetrueaddress = true, $replyto = '', $replytoname = '', $wordwrapwidth = 79, $attachment_list) {
-+                       $usetrueaddress = true, $replyto = '', $replytoname = '', $wordwrapwidth = 79, $attachment_list, $queueapproved=false) {
+-    $usetrueaddress = true, $replyto = '', $replytoname = '', $wordwrapwidth = 79, $attachment_list = [], $override_fullname_display = false
++    $usetrueaddress = true, $replyto = '', $replytoname = '', $wordwrapwidth = 79, $attachment_list = [], $override_fullname_display = false,
++    $queueapproved = false
+ ) {
  
-     global $CFG, $PAGE, $SITE;
- 
-@@ -6068,6 +6068,7 @@ function email_to_user($user, $from, $subject, $messagetext, $messagehtml = '',
+     global $CFG, $PAGE, $SITE, $DB;
+@@ -6208,6 +6208,7 @@ function email_to_user($user, $from, $subject, $messagetext, $messagehtml = '',
  
      if (!empty($user->deleted)) {
          debugging('Can not send email to deleted user: '.$user->id, DEBUG_DEVELOPER);
-+        \local_maillog\helper::log_mail(false, 'User is deleted', $user, $from, $subject, $messagetext, $messagehtml, $attachment, $attachname, $usetrueaddress, $replyto, $replytoname, $wordwrapwidth, $attachment_list);
++        \local_maillog\helper::log_mail(false, 'User is deleted', $user, $from, $subject, $messagetext, $messagehtml, $attachment, $attachname, $usetrueaddress, $replyto, $replytoname, $wordwrapwidth, $attachment_list, $override_fullname_display);  // mail_log patch.
          return false;
      }
  
-@@ -6079,6 +6080,7 @@ function email_to_user($user, $from, $subject, $messagetext, $messagehtml = '',
+@@ -6221,6 +6222,7 @@ function email_to_user($user, $from, $subject, $messagetext, $messagehtml = '',
      if (!empty($CFG->noemailever)) {
          // Hidden setting for development sites, set in config.php if needed.
          debugging('Not sending email due to $CFG->noemailever config setting', DEBUG_NORMAL);
-+        \local_maillog\helper::log_mail(false, 'noemailever config set', $user, $from, $subject, $messagetext, $messagehtml, $attachment, $attachname, $usetrueaddress, $replyto, $replytoname, $wordwrapwidth, $attachment_list);
++        \local_maillog\helper::log_mail(false, 'noemailever config set', $user, $from, $subject, $messagetext, $messagehtml, $attachment, $attachname, $usetrueaddress, $replyto, $replytoname, $wordwrapwidth, $attachment_list, $override_fullname_display);  // mail_log patch.
          return true;
      }
  
-@@ -6091,17 +6093,20 @@ function email_to_user($user, $from, $subject, $messagetext, $messagehtml = '',
+@@ -6233,6 +6235,7 @@ function email_to_user($user, $from, $subject, $messagetext, $messagehtml = '',
      // Skip mail to suspended users.
      if ((isset($user->auth) && $user->auth=='nologin') or (isset($user->suspended) && $user->suspended)) {
          // Totara: this does not work properly without the hack above because devs keep forgetting to add these fields.
-+        \local_maillog\helper::log_mail(false, 'Suspended user', $user, $from, $subject, $messagetext, $messagehtml, $attachment, $attachname, $usetrueaddress, $replyto, $replytoname, $wordwrapwidth, $attachment_list);
++        \local_maillog\helper::log_mail(false, 'Suspended user', $user, $from, $subject, $messagetext, $messagehtml, $attachment, $attachname, $usetrueaddress, $replyto, $replytoname, $wordwrapwidth, $attachment_list, $override_fullname_display);  // mail_log patch.
          return true;
      }
  
+@@ -6246,11 +6249,13 @@ function email_to_user($user, $from, $subject, $messagetext, $messagehtml = '',
      if (!validate_email($user->email)) {
          // We can not send emails to invalid addresses - it might create security issue or confuse the mailer.
          debugging("email_to_user: User $user->id (".fullname($user).") email ($user->email) is invalid! Not sending.");
-+        \local_maillog\helper::log_mail(false, 'Invalid email', $user, $from, $subject, $messagetext, $messagehtml, $attachment, $attachname, $usetrueaddress, $replyto, $replytoname, $wordwrapwidth, $attachment_list);
++        \local_maillog\helper::log_mail(false, 'Invalid email', $user, $from, $subject, $messagetext, $messagehtml, $attachment, $attachname, $usetrueaddress, $replyto, $replytoname, $wordwrapwidth, $attachment_list, $override_fullname_display);  // mail_log patch.
          return false;
      }
  
      if (over_bounce_threshold($user)) {
          debugging("email_to_user: User $user->id (".fullname($user).") is over bounce threshold! Not sending.");
-+        \local_maillog\helper::log_mail(false, 'Over bounce threshold', $user, $from, $subject, $messagetext, $messagehtml, $attachment, $attachname, $usetrueaddress, $replyto, $replytoname, $wordwrapwidth, $attachment_list);
++        \local_maillog\helper::log_mail(false, 'Over bounce threshold', $user, $from, $subject, $messagetext, $messagehtml, $attachment, $attachname, $usetrueaddress, $replyto, $replytoname, $wordwrapwidth, $attachment_list, $override_fullname_display);  // mail_log patch.
          return false;
      }
  
-@@ -6109,9 +6114,16 @@ function email_to_user($user, $from, $subject, $messagetext, $messagehtml = '',
+@@ -6258,9 +6263,16 @@ function email_to_user($user, $from, $subject, $messagetext, $messagehtml = '',
      // For More information, see {@link http://tools.ietf.org/html/rfc2606#section-2}.
      if (substr($user->email, -8) == '.invalid') {
          debugging("email_to_user: User $user->id (".fullname($user).") email domain ($user->email) is invalid! Not sending.");
-+        \local_maillog\helper::log_mail(false, 'Invalid domain for email', $user, $from, $subject, $messagetext, $messagehtml, $attachment, $attachname, $usetrueaddress, $replyto, $replytoname, $wordwrapwidth, $attachment_list);
++        \local_maillog\helper::log_mail(false, 'Invalid domain for email', $user, $from, $subject, $messagetext, $messagehtml, $attachment, $attachname, $usetrueaddress, $replyto, $replytoname, $wordwrapwidth, $attachment_list, $override_fullname_display);  // mail_log patch.
          return true; // This is not an error.
      }
  
 +    if (get_config('local_maillog', 'queuemails') && !$queueapproved) {
 +        // Queue email for sending later and return
-+        \local_maillog\helper::log_mail(true, 'Email queued', $user, $from, $subject, $messagetext, $messagehtml, $attachment, $attachname, $usetrueaddress, $replyto, $replytoname, $wordwrapwidth, $attachment_list, LOCAL_MAILLOG_STATUS_QUEUED);
++        \local_maillog\helper::log_mail(true, 'Email queued', $user, $from, $subject, $messagetext, $messagehtml, $attachment, $attachname, $usetrueaddress, $replyto, $replytoname, $wordwrapwidth, $attachment_list, $override_fullname_display, LOCAL_MAILLOG_STATUS_QUEUED);  // mail_log patch.
 +        return true;
 +    }
 +
-     // If the user is a remote mnet user, parse the email text for URL to the
-     // wwwroot and modify the url to direct the user's browser to login at their
-     // home site (identity provider - idp) before hitting the link itself.
-@@ -6380,6 +6392,7 @@ function email_to_user($user, $from, $subject, $messagetext, $messagehtml = '',
+     $mail = get_mailer();
+ 
+     if (!empty($mail->SMTPDebug)) {
+@@ -6544,6 +6556,7 @@ function email_to_user($user, $from, $subject, $messagetext, $messagehtml = '',
          if (!empty($mail->SMTPDebug)) {
              echo '</pre>';
          }
-+        \local_maillog\helper::log_mail(true, '', $user, $mail->From, $subject, $messagetext, $messagehtml, $attachment, $attachname, $usetrueaddress, $replyto, $replytoname, $wordwrapwidth, $attachment_list);
++        \local_maillog\helper::log_mail(true, '', $user, $mail->From, $subject, $messagetext, $messagehtml, $attachment, $attachname, $usetrueaddress, $replyto, $replytoname, $wordwrapwidth, $attachment_list, $override_fullname_display); // mail_log patch.
          return true;
      } else {
          // Trigger event for failing to send email.
-@@ -6400,6 +6413,7 @@ function email_to_user($user, $from, $subject, $messagetext, $messagehtml = '',
+@@ -6564,6 +6577,7 @@ function email_to_user($user, $from, $subject, $messagetext, $messagehtml = '',
          if (!empty($mail->SMTPDebug)) {
              echo '</pre>';
          }
-+        \local_maillog\helper::log_mail(false, 'mail->Send() returned false', $user, $mail->From, $subject, $messagetext, $messagehtml, $attachment, $attachname, $usetrueaddress, $replyto, $replytoname, $wordwrapwidth, $attachment_list);
++        \local_maillog\helper::log_mail(false, '', $user, $mail->From, $subject, $messagetext, $messagehtml, $attachment, $attachname, $usetrueaddress, $replyto, $replytoname, $wordwrapwidth, $attachment_list, $override_fullname_display); // mail_log patch.
          return false;
      }
  }
