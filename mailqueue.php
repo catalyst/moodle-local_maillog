@@ -87,7 +87,7 @@ $PAGE->requires->js_init_call('M.local_maillog_mailqueue.init', array(), false, 
 ///
 /// Display the page
 ///
-$PAGE->navbar->add(get_string('pluginname', 'local_maillog'), new moodle_url('/admin/settings.php', array('section' => 'local_maillog')));
+$PAGE->navbar->add(get_string('pluginname', 'local_maillog'), new moodle_url('/admin/settings.php', array('section' => 'managelocalmaillog')));
 $PAGE->navbar->add($strheading);
 
 $PAGE->set_title($strheading);
