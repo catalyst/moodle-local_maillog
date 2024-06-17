@@ -39,13 +39,14 @@ class purge_log extends \core\task\scheduled_task {
         return get_string('task:purgelog', 'local_maillog');
     }
 
+    /**
+     * Execute task
+     */
     public function execute() {
-        // Purge old mail log entries
-        $maxdays = get_config('local_maillog', 'maxdays');
-        if (empty($maxdays)) {
-            $maxdays = 7;
-        }
-        mtrace("Deleting log entries older than {$maxdays} days.");
-        \local_maillog\helper::purge($maxdays);
+        // Spawn adhoc task to do the purge, in case it fails it can be retried gracefully.
+        $task = new purge_log_adhoc();
+
+        // Deduplicate in case the previous one has not finished yet or one is already queued.
+        \core\task\manager::queue_adhoc_task($task, true);
     }
 }

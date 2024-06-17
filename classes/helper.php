@@ -34,18 +34,31 @@ define('LOCAL_MAILLOG_STATUS_PENDINGSEND', 2);
 
 class helper {
 
-	static function purge($maxdays) {
-		global $CFG, $DB;
+	/**
+	 * Purges emails logged older than $maxdays
+	 * @param int $maxdays the number of days old a log should be before being purged
+	 * @param int $maxiterations the number of blocks of 1k records to delete as a fail safe against infinite loops.
+	 */
+	static function purge($maxdays, $maxiterations = 1000) {
+		global $DB;
 
-		$olderthantime = time() - $maxdays * 24 * 60 * 60;
+		$olderthantime = time() - $maxdays * DAYSECS;
 
-		// We can straight up delete records without attachments
-		$DB->delete_records_select('mail_log', 'timesent < ? AND attachment IS NULL', array($olderthantime));
+		// We can straight up delete records without attachments. This is very efficient.
+		$DB->delete_records_select('mail_log', 'timesent < ? AND attachment IS NULL', [$olderthantime]);
 
-		// If there's any left to delete, these must have attachments - they should be removed one-by-one
-		$logitems = $DB->get_records_select('mail_log', 'timesent < ?', array($olderthantime));
-		foreach ($logitems as $item) {
-			\local_maillog\helper::delete(array($item->id));
+		// The remaining have attachments which need to also be deleted.
+		// Delete these in chunks of 1k, as to not exceed the query parameter limit.
+		// Do this until there are no more records to delete (or ran out of iterations as a fail safe);
+		for ($i = 0; $i < $maxiterations; $i++) {
+			$records = $DB->get_records_select('mail_log', 'timesent < ?', [$olderthantime], '', 'id', 0, 1000);
+			$ids = array_column($records, 'id');
+
+			// Done - exit early.
+			if (empty($ids)) {
+				break;
+			}
+			\local_maillog\helper::delete($ids);
 		}
 	}
 
@@ -105,6 +118,11 @@ class helper {
 		$transaction->allow_commit();
 	}
 
+	/**
+	 * Delete the logs with the given ids
+	 * Note the size of the $ids param must not exceed the maximum db query parameter limit.
+	 * @param array $ids
+	 */
 	static function delete($ids) {
 		global $DB;
 
