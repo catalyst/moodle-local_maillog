@@ -14,21 +14,31 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+namespace local_maillog\task;
+
+use core\task\adhoc_task;
+use local_maillog\helper;
+
 /**
- * Mail log version.
+ * Mail log purge log task.
  *
  * @package   local_maillog
- * @author    Eugene Venter <eugene@catalyst.net.nz>
- * @copyright 2013 onwards Catalyst IT Ltd
+ * @author    Matthew Hilton <matthewhilton@catalyst-au.net>
+ * @copyright 2024 Catalyst IT Australia
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+class purge_log_adhoc extends adhoc_task {
 
-defined('MOODLE_INTERNAL') || die();
-
-// Extra 0 due to broken previous version number.
-$plugin->version   = 20201106001;
-$plugin->requires  = 2015051100;
-$plugin->cron      = 0;
-$plugin->component = 'local_maillog';
-$plugin->maturity  = MATURITY_ALPHA;
-$plugin->release   = 'ALPHA';
+    /**
+     * Executes purge
+     */
+    public function execute() {
+        // Purge old mail log entries
+        $maxdays = get_config('local_maillog', 'maxdays');
+        if (empty($maxdays)) {
+            $maxdays = 7;
+        }
+        mtrace("Deleting log entries older than {$maxdays} days.");
+        helper::purge($maxdays);
+    }
+}
