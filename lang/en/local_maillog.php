@@ -24,7 +24,7 @@
  */
 
 $string['pluginname'] = 'Mail log';
-$string['configlogmails'] = 'Log all sent emails. Emails will be kept for 3 months.';
+$string['configlogmails'] = 'Log all sent emails';
 $string['configqueuemails'] = 'Rather than sending out emails, queue emails for approval prior to sending out. <b>NOTE:</b> You must have logging enabled too, if you want to use this feature.<br><b><a href="{$a}">View queue here</a></b>';
 $string['confirmqueuedelete'] = 'Are you sure you want to remove the items from the queue?';
 $string['confirmqueuesend'] = 'Are you sure you want to send these queued items?';
