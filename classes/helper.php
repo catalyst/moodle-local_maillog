@@ -65,7 +65,7 @@ class helper {
 	static function log_mail($success, $msg, $user, $from, $subject, $messagetext, $messagehtml, $attachment, $attachname, $usetrueaddress, $replyto, $replytoname, $wordwrapwidth, $queuestatus=0) {
 		global $CFG, $DB;
 
-		if (!\get_config('local_maillog', 'logmails')) {
+		if (!\get_config('local_maillog', 'logmails') || PHPUNIT_TEST)  {
 			return true;
 		}
 
