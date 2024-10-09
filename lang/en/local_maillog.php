@@ -55,7 +55,30 @@ $string['task:sendscheduled'] = 'Send scheduled emails';
 $string['timesent'] = 'Time sent';
 $string['withselected'] = 'With selected:';
 
+// Custom Report Strings
+$string['maillogreport'] = 'Maillog';
+$string['entity_maillog'] = 'Maillog';
+$string['userid'] = 'User ID';
+$string['fromobj'] = 'From object';
+$string['toaddress'] = 'To address';
+$string['fromaddress'] = 'From address';
+$string['subject'] = 'Subject';
+$string['messagetext'] = 'Message text';
+$string['messagehtml'] = 'Message HTML';
+$string['attachment'] = 'Attachment';
+$string['attachname'] = 'Attachment name';
+$string['usetrueaddress'] = 'Use true address';
+$string['replyto'] = 'Reply to';
+$string['replytoname'] = 'Reply to name';
+$string['wordwrapwidth'] = 'Word wrap width';
+$string['timesent'] = 'Time sent';
+$string['success'] = 'Success';
+$string['returnmsg'] = 'Return message';
+$string['queuestatus'] = 'Queue status';
+$string['originscript'] = 'Origin script';
+
 // Privacy Strings.
 $string['privacy:metadata:mail_log:userid'] = 'The id that the email was sent to.';
 $string['privacy:metadata:mail_log:toaddress'] = 'The email address that the email was sent to.';
 $string['privacy:metadata:mail_log'] = 'Stores information on sent emails from the system.';
+ 
