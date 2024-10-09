@@ -35,36 +35,6 @@ $strheading = get_string('maillog', 'local_maillog');
 $PAGE->set_title($strheading);
 $PAGE->set_heading($strheading);
 
-$logid = optional_param('logid', null, PARAM_INT);
-$download = optional_param('download', false, PARAM_BOOL);
-$filter = optional_param('filter', null, PARAM_TEXT);
-
-if (null !== $logid) {
-    // Raise memory limit in case the log is large.
-    raise_memory_limit(MEMORY_HUGE);
-    $log = $DB->get_record('maillog_report', ['id' => $logid], '*', MUST_EXIST);
-
-    if ($download) {
-        $filename = str_replace('\\', '_', $log->classname) . "-{$log->id}.log";
-        header("Content-Disposition: attachment; filename=\"{$filename}\"");
-        readstring_accel($log->output, 'text/plain');
-        exit;
-    }
-
-    try {
-        $class = new $log->classname;
-        $title = $class->get_name();
-    } catch (Exception $e) {
-        $title = $log->classname;
-    }
-    $title .= " ($log->id)";
-
-    $PAGE->navbar->add($title, '');
-    echo $OUTPUT->header();
-    echo $OUTPUT->footer();
-    exit;
-}
-
 echo $OUTPUT->header();
 $report = system_report_factory::create(maillog_report::class, context_system::instance());
 
