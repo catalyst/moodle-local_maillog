@@ -26,9 +26,9 @@
 defined('MOODLE_INTERNAL') || die();
 
 // Extra 0 due to broken previous version number.
-$plugin->version   = 20201106002;
+$plugin->version   = 20241010002;
 $plugin->requires  = 2015051100;
 $plugin->cron      = 0;
 $plugin->component = 'local_maillog';
-$plugin->maturity  = MATURITY_ALPHA;
-$plugin->release   = 'ALPHA';
+$plugin->maturity  = MATURITY_STABLE;
+$plugin->release   = 2024101000;
