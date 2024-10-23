@@ -24,6 +24,7 @@
  */
 
 $string['pluginname'] = 'Mail log';
+$string['maillog'] = 'Mail log';
 $string['configlogmails'] = 'Log all sent emails';
 $string['configqueuemails'] = 'Rather than sending out emails, queue emails for approval prior to sending out. <b>NOTE:</b> You must have logging enabled too, if you want to use this feature.<br><b><a href="{$a}">View queue here</a></b>';
 $string['confirmqueuedelete'] = 'Are you sure you want to remove the items from the queue?';
@@ -81,4 +82,3 @@ $string['originscript'] = 'Origin script';
 $string['privacy:metadata:mail_log:userid'] = 'The id that the email was sent to.';
 $string['privacy:metadata:mail_log:toaddress'] = 'The email address that the email was sent to.';
 $string['privacy:metadata:mail_log'] = 'Stores information on sent emails from the system.';
- 

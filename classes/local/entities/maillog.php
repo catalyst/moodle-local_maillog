@@ -37,11 +37,11 @@ class maillog extends base {
      *
      * @return array
      */
-    protected function get_default_tables(): array {
+    protected function get_default_table_aliases(): array {
         return [
-            'mail_log',
-            'user',
-            'course',
+            'mail_log' => 'ml',
+            'user' => 'u',
+            'course' => 'c',
         ];
     }
     /**
@@ -120,7 +120,7 @@ class maillog extends base {
             ->set_is_sortable(true)
             ->set_type(column::TYPE_TEXT)
             ->add_field("{$maillogalias}.toaddress");
-        
+
         // From address column
         $columns[] = (new column(
             'fromaddress',
@@ -131,7 +131,7 @@ class maillog extends base {
             ->set_is_sortable(true)
             ->set_type(column::TYPE_TEXT)
             ->add_field("{$maillogalias}.fromaddress");
-        
+
         // Subject column
         $columns[] = (new column(
             'subject',
@@ -142,7 +142,7 @@ class maillog extends base {
             ->set_is_sortable(true)
             ->set_type(column::TYPE_TEXT)
             ->add_field("{$maillogalias}.subject");
-        
+
         // Message text column
         $columns[] = (new column(
             'messagetext',
@@ -153,7 +153,7 @@ class maillog extends base {
             ->set_is_sortable(true)
             ->set_type(column::TYPE_TEXT)
             ->add_field("{$maillogalias}.messagetext");
-        
+
         // Message HTML column
         $columns[] = (new column(
             'messagehtml',
@@ -164,7 +164,7 @@ class maillog extends base {
             ->set_is_sortable(true)
             ->set_type(column::TYPE_TEXT)
             ->add_field("{$maillogalias}.messagehtml");
-        
+
         // Attachment column
         $columns[] = (new column(
             'attachment',
@@ -175,7 +175,7 @@ class maillog extends base {
             ->set_is_sortable(true)
             ->set_type(column::TYPE_TEXT)
             ->add_field("{$maillogalias}.attachment");
-        
+
         // Attachname column
         $columns[] = (new column(
             'attachname',
@@ -186,7 +186,7 @@ class maillog extends base {
             ->set_is_sortable(true)
             ->set_type(column::TYPE_TEXT)
             ->add_field("{$maillogalias}.attachname");
-        
+
         // Use true address column
         $columns[] = (new column(
             'usetrueaddress',
@@ -197,7 +197,7 @@ class maillog extends base {
             ->set_is_sortable(true)
             ->set_type(column::TYPE_INTEGER)
             ->add_field("{$maillogalias}.usetrueaddress");
-        
+
         // Reply to column
         $columns[] = (new column(
             'replyto',
@@ -208,7 +208,7 @@ class maillog extends base {
             ->set_is_sortable(true)
             ->set_type(column::TYPE_TEXT)
             ->add_field("{$maillogalias}.replyto");
-        
+
         // Reply to name column
         $columns[] = (new column(
             'replytoname',
@@ -219,7 +219,7 @@ class maillog extends base {
             ->set_is_sortable(true)
             ->set_type(column::TYPE_TEXT)
             ->add_field("{$maillogalias}.replytoname");
-        
+
         // Word wrap width column
         $columns[] = (new column(
             'wordwrapwidth',
@@ -230,7 +230,7 @@ class maillog extends base {
             ->set_is_sortable(true)
             ->set_type(column::TYPE_INTEGER)
             ->add_field("{$maillogalias}.wordwrapwidth");
-        
+
         // Time sent column
         $columns[] = (new column(
             'timesent',
@@ -242,7 +242,7 @@ class maillog extends base {
             ->set_type(column::TYPE_TIMESTAMP)
             ->add_field("{$maillogalias}.timesent")
             ->add_callback([format::class, 'userdate'], get_string('strftimedatetimeshortaccurate', 'core_langconfig'));
-        
+
         // Success column
         $columns[] = (new column(
             'success',
@@ -253,7 +253,7 @@ class maillog extends base {
             ->set_is_sortable(true)
             ->set_type(column::TYPE_INTEGER)
             ->add_field("{$maillogalias}.success");
-        
+
         // Return message column
         $columns[] = (new column(
             'returnmsg',
@@ -264,7 +264,7 @@ class maillog extends base {
             ->set_is_sortable(true)
             ->set_type(column::TYPE_TEXT)
             ->add_field("{$maillogalias}.returnmsg");
-        
+
         // Queue status column
         $columns[] = (new column(
             'queuestatus',
@@ -275,7 +275,7 @@ class maillog extends base {
             ->set_is_sortable(true)
             ->set_type(column::TYPE_BOOLEAN)
             ->add_field("{$maillogalias}.queuestatus");
-        
+
         // Origin script column
         $columns[] = (new column(
             'originscript',
@@ -286,7 +286,7 @@ class maillog extends base {
             ->set_is_sortable(true)
             ->set_type(column::TYPE_TEXT)
             ->add_field("{$maillogalias}.originscript");
-        
+
         return $columns;
     }
 
@@ -359,7 +359,7 @@ class maillog extends base {
             "$maillogalias.messagetext"
         ))
             ->add_joins($this->get_joins());
-            
+
         // Message HTML filter
         $filters[] = (new filter(
             text::class,
@@ -369,7 +369,7 @@ class maillog extends base {
             "$maillogalias.messagehtml"
         ))
             ->add_joins($this->get_joins());
-            
+
         // Attachment filter
         $filters[] = (new filter(
             text::class,
@@ -458,7 +458,7 @@ class maillog extends base {
         $this->get_entity_name(),
         "$maillogalias.returnmsg"
         ))
-            ->add_joins($this->get_joins());     
+            ->add_joins($this->get_joins());
 
         // Queue status filter
         $filters[] = (new filter(
@@ -468,7 +468,7 @@ class maillog extends base {
         $this->get_entity_name(),
         "$maillogalias.queuestatus"
         ))
-            ->add_joins($this->get_joins());  
+            ->add_joins($this->get_joins());
 
         // Origin script filter
         $filters[] = (new filter(
@@ -478,8 +478,8 @@ class maillog extends base {
         $this->get_entity_name(),
         "$maillogalias.originscript"
         ))
-            ->add_joins($this->get_joins());  
-            
+            ->add_joins($this->get_joins());
+
         return $filters;
     }
 
