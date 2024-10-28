@@ -22,7 +22,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require_once(__DIR__ . '/../config.php');
+require_once('../../config.php');
 require_once("{$CFG->libdir}/adminlib.php");
 
 use core_reportbuilder\system_report_factory;
@@ -30,7 +30,8 @@ use local_maillog\reportbuilder\local\systemreports\maillog_report;
 
 $PAGE->set_url(new \moodle_url('/local/maillog/maillogreport.php'));
 $PAGE->set_context(context_system::instance());
-$PAGE->set_pagelayout('default');
+$PAGE->set_pagelayout('report');
+$PAGE->add_body_class('limitedwidth');
 $strheading = get_string('maillog', 'local_maillog');
 $PAGE->set_title($strheading);
 $PAGE->set_heading($strheading);
