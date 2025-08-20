@@ -33,6 +33,7 @@ $string['delete'] = 'Delete';
 $string['error:noitemsselected'] = 'No items selected';
 $string['error:unknownaction'] = 'Unknown action';
 $string['failed'] = 'Failed';
+$string['to'] = 'To';
 $string['hasattachment'] = 'Has attachment';
 $string['send'] = 'Send';
 $string['noscript'] = 'You need to have Javascript enabled in order to use this feature';
