@@ -59,6 +59,8 @@ class local_maillog_external extends external_api {
      * @since Moodle 2.5
      */
     public static function send_messages($messageids) {
+        require_capability('local/maillog:managequeue', \context_system::instance());
+
         $params = self::validate_parameters(self::send_messages_parameters(), array('messageids' => $messageids));
 
         // Validate params.
@@ -101,6 +103,8 @@ class local_maillog_external extends external_api {
      * @since Moodle 2.5
      */
     public static function delete_messages($messageids) {
+        require_capability('local/maillog:managequeue', \context_system::instance());
+
         $params = self::validate_parameters(self::delete_messages_parameters(), array('messageids' => $messageids));
 
         // Validate params.
