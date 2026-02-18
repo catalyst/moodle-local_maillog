@@ -42,7 +42,7 @@ class log_table extends \table_sql {
 
         $this->define_columns($cols);
         $this->define_headers(array(
-                get_string('to', 'local_maillog'),
+                get_string('toaddress', 'local_maillog'),
                 get_string('subject', 'hub'),
                 get_string('content'),
                 get_string('hasattachment', 'local_maillog'),
