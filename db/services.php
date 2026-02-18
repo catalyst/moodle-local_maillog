@@ -15,20 +15,28 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Mail log version.
+ * Maillog external functions and service definitions.
  *
  * @package   local_maillog
- * @author    Eugene Venter <eugene@catalyst.net.nz>
- * @copyright 2013 onwards Catalyst IT Ltd
+ * @category  webservice
+ * @author    Sasha Anastasi <sasha.anastasi@catalyst.net.nz>
+ * @copyright 2026 onwards Catalyst IT Ltd
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
 defined('MOODLE_INTERNAL') || die();
-
-// Extra 0 due to broken previous version number.
-$plugin->version   = 20260218000;
-$plugin->requires  = 2015051100;
-$plugin->cron      = 0;
-$plugin->component = 'local_maillog';
-$plugin->maturity  = MATURITY_ALPHA;
-$plugin->release   = 'ALPHA';
+$functions = [
+    'local_maillog_send_messages' => [
+        'classname'   => 'local_maillog_external',
+        'methodname'   => 'send_messages',
+        'description' => 'Schedule queued messages to be sent.',
+        'type'        => 'write',
+        'ajax'        => true,
+    ],
+    'local_maillog_delete_messages' => [
+        'classname'   => 'local_maillog_external',
+        'methodname'   => 'delete_messages',
+        'description' => 'Schedule queued messages to be deleted.',
+        'type'        => 'write',
+        'ajax'        => true,
+    ],
+];
