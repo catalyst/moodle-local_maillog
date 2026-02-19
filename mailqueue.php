@@ -15,20 +15,22 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Mail log queue/log.
+ * Mail queue report page.
  *
  * @package   local_maillog
  * @author    Eugene Venter <eugene@catalyst.net.nz>
- * @copyright 2013 onwards Catalyst IT Ltd
+ *            Sasha Anastasi <sasha.anastasi@catalyst.net.nz>
+ * @copyright 2026 onwards Catalyst IT Ltd
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
 
+use core_reportbuilder\system_report_factory;
+use local_maillog\local\systemreports\queuereport;
+
 require_login();
-
-$context = context_system::instance();
-
+$context = \context_system::instance();
 require_capability('local/maillog:managequeue', $context);
 
 $sid = optional_param('sid', '0', PARAM_INT);
@@ -52,4 +54,29 @@ $PAGE->set_heading($strheading);
 
 echo $OUTPUT->header();
 echo $OUTPUT->heading($strheading, 1);
+
+$report = system_report_factory::create(queuereport::class, $context);
+echo $report->output();
+
+if ($DB->record_exists('mail_log', [])) {
+    // Render send selected button.
+    echo $OUTPUT->render(new single_button(
+        new moodle_url('#'),
+        get_string('sendselected', 'local_maillog'),
+        'post',
+        single_button::BUTTON_INFO,
+        ['data-action' => 'queue-send-selected']
+    ));
+
+    // Render delete selected button.
+    echo $OUTPUT->render(new single_button(
+        new moodle_url('#'),
+        get_string('deleteselected'),
+        'post',
+        single_button::BUTTON_DANGER,
+        ['data-action' => 'queue-delete-selected']
+    ));
+    $PAGE->requires->js_call_amd('local_maillog/queueaction', 'init');
+}
+
 echo $OUTPUT->footer();

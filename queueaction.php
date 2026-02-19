@@ -19,7 +19,8 @@
  *
  * @package   local_maillog
  * @author    Eugene Venter <eugene@catalyst.net.nz>
- * @copyright 2013 onwards Catalyst IT Ltd
+ *            Sasha Anastasi <sasha.anastasi@catalyst.net.nz>
+ * @copyright 2026 onwards Catalyst IT Ltd
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
@@ -29,61 +30,44 @@ $context = context_system::instance();
 require_login();
 require_capability('local/maillog:managequeue', $context);
 
-// determine queue action
-if (optional_param('send', '', PARAM_ALPHANUM)) {
-    $action = 'send';
-} else if (optional_param('delete', '', PARAM_ALPHANUM)) {
-    $action = 'delete';
-} else {
-    print_error('error:unknownaction', 'local_maillog');
-}
-
-$logids = required_param_array('local_maillog_items', PARAM_INT);
-if (empty($logids)) {
-    print_error('error:noitemsselected', 'local_maillog');
-}
-
 $PAGE->set_context($context);
 $PAGE->set_url('/local/maillog/queueaction.php');
 $PAGE->navbar->add(get_string('pluginname', 'local_maillog'), new moodle_url('/admin/settings.php', array('section' => 'local_maillog')));
 $PAGE->navbar->add(get_string('mailqueue', 'local_maillog'), new moodle_url('/local/maillog/mailqueue.php', array('section' => 'local_maillog')));
 
 $returnurl = $CFG->wwwroot.'/local/maillog/mailqueue.php';
-
 $confirmurl = $PAGE->url;
-foreach ($logids as $logid) {
-    $confirmurl->params(array("local_maillog_items[{$logid}]" => $logid));
+
+$action = required_param('action', PARAM_ALPHANUM);
+switch($action) {
+    case 'delete':
+        $logid = required_param('logid', PARAM_ALPHANUM);
+        $confirmurl->params(array('logid' => $logid));
+        $confirm = optional_param('confirm', false, PARAM_BOOL);
+        if (!$confirm) {
+            echo $OUTPUT->header();
+            $confirmurl->params(array('action' => 'delete', 'confirm' => 1, 'sesskey' => sesskey()));
+            echo $OUTPUT->confirm(get_string('confirmdelete', 'local_maillog'), $confirmurl, $returnurl);
+            echo $OUTPUT->footer();
+            die();
+        }
+        require_sesskey();
+        \local_maillog\helper::delete([$logid]);
+        redirect($returnurl, get_string('queueitemdeleted', 'local_maillog'));
+    case 'send':
+        $logid = required_param('logid', PARAM_ALPHANUM);
+        $confirmurl->params(array('logid' => $logid));
+        $confirm = optional_param('confirm', false, PARAM_BOOL);
+        if (!$confirm) {
+            echo $OUTPUT->header();
+            $confirmurl->params(array('action' => 'send', 'confirm' => 1, 'sesskey' => sesskey()));
+            echo $OUTPUT->confirm(get_string('confirmsend', 'local_maillog'), $confirmurl, $returnurl);
+            echo $OUTPUT->footer();
+            die();
+        }
+        require_sesskey();
+        \local_maillog\helper::schedule_send([$logid]);
+        redirect($returnurl, get_string('queueitemscheduled', 'local_maillog'));
+    default:
+        throw new \moodle_exception('error:unknownaction', 'local_maillog');
 }
-
-if ($action == 'delete') {
-    $confirm = optional_param('confirm', false, PARAM_BOOL);
-    if (!$confirm) {
-        echo $OUTPUT->header();
-        $confirmurl->params(array('delete' => 1, 'confirm' => 1, 'sesskey' => sesskey()));
-        echo $OUTPUT->confirm(get_string('confirmqueuedelete', 'local_maillog'), $confirmurl, $returnurl);
-        echo $OUTPUT->footer();
-        die();
-    }
-
-    require_sesskey();
-
-    \local_maillog\helper::delete($logids);
-    
-    redirect($returnurl, get_string('queueitemsdeleted', 'local_maillog'));
-} else if ($action == 'send') {
-    $confirm = optional_param('confirm', false, PARAM_BOOL);
-    if (!$confirm) {
-        echo $OUTPUT->header();
-        $confirmurl->params(array('send' => 1, 'confirm' => 1, 'sesskey' => sesskey()));
-        echo $OUTPUT->confirm(get_string('confirmqueuesend', 'local_maillog'), $confirmurl, $returnurl);
-        echo $OUTPUT->footer();
-        die();
-    }
-
-    require_sesskey();
-
-    \local_maillog\helper::schedule_send($logids);
-
-    redirect($returnurl, get_string('queueitemsscheduled', 'local_maillog'));
-}
-
