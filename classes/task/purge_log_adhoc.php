@@ -17,7 +17,7 @@
 namespace local_maillog\task;
 
 use core\task\adhoc_task;
-use local_maillog\helper;
+use local_maillog\local\helper;
 
 /**
  * Mail log purge log task.

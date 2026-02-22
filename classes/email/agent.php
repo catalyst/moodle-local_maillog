@@ -26,6 +26,7 @@ namespace local_maillog\email;
 defined('MOODLE_INTERNAL') || die();
 
 use core\email;
+use local_maillog\local\helper;
 
 class agent extends email\agent {
 
@@ -78,7 +79,7 @@ class agent extends email\agent {
         }
 
         if ($failed) {
-            \local_maillog\helper::log_mail(
+            helper::log_mail(
                 false,
                 $msg,
                 $this->user, $this->from,
@@ -96,7 +97,7 @@ class agent extends email\agent {
         if (get_config('local_maillog', 'queuemails') && !$failed) {
             if (!$this->queueapproved) {
                 // Queue email for sending later and return
-                \local_maillog\helper::log_mail(
+                helper::log_mail(
                     true,
                     'Email queued',
                     $this->user,
@@ -122,7 +123,7 @@ class agent extends email\agent {
     protected function email_send(): bool {
         $sent = parent::email_send();
         if ($sent) {
-            \local_maillog\helper::log_mail(
+            helper::log_mail(
                 true,
                 '',
                 $this->user,
@@ -138,7 +139,7 @@ class agent extends email\agent {
                 $this->wordwrapwidth
             );
         } else {
-            \local_maillog\helper::log_mail(
+            helper::log_mail(
                 false,
                 'mail->Send() returned false',
                 $this->user,

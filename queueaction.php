@@ -52,7 +52,7 @@ switch($action) {
             die();
         }
         require_sesskey();
-        \local_maillog\helper::delete([$logid]);
+        \local_maillog\local\helper::delete([$logid]);
         redirect($returnurl, get_string('queueitemdeleted', 'local_maillog'));
     case 'send':
         $logid = required_param('logid', PARAM_ALPHANUM);
@@ -66,7 +66,7 @@ switch($action) {
             die();
         }
         require_sesskey();
-        \local_maillog\helper::schedule_send([$logid]);
+        \local_maillog\local\helper::schedule_send([$logid]);
         redirect($returnurl, get_string('queueitemscheduled', 'local_maillog'));
     default:
         throw new \moodle_exception('error:unknownaction', 'local_maillog');

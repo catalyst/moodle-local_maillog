@@ -40,7 +40,7 @@ class send_scheduled extends \core\task\scheduled_task {
     }
 
     public function execute() {
-        $sentcount = \local_maillog\helper::send_scheduled();
+        $sentcount = \local_maillog\local\helper::send_scheduled();
         mtrace("{$sentcount} emails sent");
     }
 }
