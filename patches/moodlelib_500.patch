@@ -1,0 +1,87 @@
+diff --git a/lib/moodlelib.php b/lib/moodlelib.php
+index 094b4e02e18..0f72932db3b 100644
+--- a/lib/moodlelib.php
++++ b/lib/moodlelib.php
+@@ -30,6 +30,7 @@
+ 
+ use core\di;
+ use core\hook;
++use local_maillog\local\helper as maillog_helper;
+ 
+ defined('MOODLE_INTERNAL') || die();
+ 
+@@ -5611,7 +5612,7 @@ function email_to_user($user, $from, $subject, $messagetext, $messagehtml = '',
+ 
+     if (!empty($user->deleted)) {
+         debugging('Can not send email to deleted user: '.$user->id, DEBUG_DEVELOPER);
+-        \local_maillog\helper::log_mail(false, 'User is deleted', $user, $from, $subject, $messagetext, $messagehtml, $attachment, $attachname, $usetrueaddress, $replyto, $replytoname, $wordwrapwidth);  // Maillog patch.
++        maillog_helper::log_mail(false, 'User is deleted', $user, $from, $subject, $messagetext, $messagehtml, $attachment, $attachname, $usetrueaddress, $replyto, $replytoname, $wordwrapwidth);  // Maillog patch.
+         return false;
+     }
+ 
+@@ -5625,13 +5626,13 @@ function email_to_user($user, $from, $subject, $messagetext, $messagehtml = '',
+     if (!empty($CFG->noemailever)) {
+         // Hidden setting for development sites, set in config.php if needed.
+         debugging('Not sending email due to $CFG->noemailever config setting', DEBUG_DEVELOPER);
+-        \local_maillog\helper::log_mail(false, 'noemailever config set', $user, $from, $subject, $messagetext, $messagehtml, $attachment, $attachname, $usetrueaddress, $replyto, $replytoname, $wordwrapwidth);
++        maillog_helper::log_mail(false, 'noemailever config set', $user, $from, $subject, $messagetext, $messagehtml, $attachment, $attachname, $usetrueaddress, $replyto, $replytoname, $wordwrapwidth);
+         return true;
+     }
+ 
+     if (get_config('local_maillog', 'queuemails') && !$queueapproved) {
+         // Queue email for sending later and return
+-        \local_maillog\helper::log_mail(true, 'Email queued', $user, $from, $subject, $messagetext, $messagehtml, $attachment, $attachname, $usetrueaddress, $replyto, $replytoname, $wordwrapwidth, LOCAL_MAILLOG_STATUS_QUEUED);
++        maillog_helper::log_mail(true, 'Email queued', $user, $from, $subject, $messagetext, $messagehtml, $attachment, $attachname, $usetrueaddress, $replyto, $replytoname, $wordwrapwidth, LOCAL_MAILLOG_STATUS_QUEUED);
+         return true;
+     }
+ 
+@@ -5643,19 +5644,19 @@ function email_to_user($user, $from, $subject, $messagetext, $messagehtml = '',
+ 
+     // Skip mail to suspended users.
+     if ((isset($user->auth) && $user->auth=='nologin') or (isset($user->suspended) && $user->suspended)) {
+-        \local_maillog\helper::log_mail(false, 'Suspended user', $user, $from, $subject, $messagetext, $messagehtml, $attachment, $attachname, $usetrueaddress, $replyto, $replytoname, $wordwrapwidth);
++        maillog_helper::log_mail(false, 'Suspended user', $user, $from, $subject, $messagetext, $messagehtml, $attachment, $attachname, $usetrueaddress, $replyto, $replytoname, $wordwrapwidth);
+         return true;
+     }
+ 
+     if (!validate_email($user->email)) {
+         // We can not send emails to invalid addresses - it might create security issue or confuse the mailer.
+-        \local_maillog\helper::log_mail(false, 'Invalid email', $user, $from, $subject, $messagetext, $messagehtml, $attachment, $attachname, $usetrueaddress, $replyto, $replytoname, $wordwrapwidth);
++        maillog_helper::log_mail(false, 'Invalid email', $user, $from, $subject, $messagetext, $messagehtml, $attachment, $attachname, $usetrueaddress, $replyto, $replytoname, $wordwrapwidth);
+         debugging("email_to_user: User $user->id (".fullname($user).") email ($user->email) is invalid! Not sending.");
+         return false;
+     }
+ 
+     if (over_bounce_threshold($user)) {
+-        \local_maillog\helper::log_mail(false, 'Over bounce threshold', $user, $from, $subject, $messagetext, $messagehtml, $attachment, $attachname, $usetrueaddress, $replyto, $replytoname, $wordwrapwidth);
++        maillog_helper::log_mail(false, 'Over bounce threshold', $user, $from, $subject, $messagetext, $messagehtml, $attachment, $attachname, $usetrueaddress, $replyto, $replytoname, $wordwrapwidth);
+         debugging("email_to_user: User $user->id (".fullname($user).") is over bounce threshold! Not sending.");
+         return false;
+     }
+@@ -5664,7 +5665,7 @@ function email_to_user($user, $from, $subject, $messagetext, $messagehtml = '',
+     // For More information, see {@link http://tools.ietf.org/html/rfc2606#section-2}.
+     if (substr($user->email, -8) == '.invalid') {
+         debugging("email_to_user: User $user->id (".fullname($user).") email domain ($user->email) is invalid! Not sending.");
+-        \local_maillog\helper::log_mail(false, 'Invalid domain for email', $user, $from, $subject, $messagetext, $messagehtml, $attachment, $attachname, $usetrueaddress, $replyto, $replytoname, $wordwrapwidth);
++        maillog_helper::log_mail(false, 'Invalid domain for email', $user, $from, $subject, $messagetext, $messagehtml, $attachment, $attachname, $usetrueaddress, $replyto, $replytoname, $wordwrapwidth);
+         return true; // This is not an error.
+     }
+ 
+@@ -5971,7 +5972,7 @@ function email_to_user($user, $from, $subject, $messagetext, $messagehtml = '',
+         if (!empty($mail->SMTPDebug)) {
+             echo '</pre>';
+         }
+-        \local_maillog\helper::log_mail(true, '', $user, $mail->From, $subject, $messagetext, $messagehtml, $attachment, $attachname, $usetrueaddress, $replyto, $replytoname, $wordwrapwidth);
++        maillog_helper::log_mail(true, '', $user, $mail->From, $subject, $messagetext, $messagehtml, $attachment, $attachname, $usetrueaddress, $replyto, $replytoname, $wordwrapwidth);
+         return true;
+     } else {
+         // Trigger event for failing to send email.
+@@ -5992,7 +5993,7 @@ function email_to_user($user, $from, $subject, $messagetext, $messagehtml = '',
+         if (!empty($mail->SMTPDebug)) {
+             echo '</pre>';
+         }
+-        \local_maillog\helper::log_mail(false, 'mail->Send() returned false', $user, $mail->From, $subject, $messagetext, $messagehtml, $attachment, $attachname, $usetrueaddress, $replyto, $replytoname, $wordwrapwidth);
++        maillog_helper::log_mail(false, 'mail->Send() returned false', $user, $mail->From, $subject, $messagetext, $messagehtml, $attachment, $attachname, $usetrueaddress, $replyto, $replytoname, $wordwrapwidth);
+         return false;
+     }
+ }
