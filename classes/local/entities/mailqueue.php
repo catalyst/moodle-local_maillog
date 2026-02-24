@@ -84,7 +84,18 @@ class mailqueue extends base {
      * @throws \coding_exception
      */
     protected function get_all_columns(): array {
+        require_once(__DIR__ . '/../helper.php');
         $maillogalias = $this->get_table_alias('mail_log');
+
+        $columns[] = (new column(
+            'toaddress',
+            new lang_string('toaddress', 'local_maillog'),
+            $this->get_entity_name()
+        ))
+            ->add_joins($this->get_joins())
+            ->set_is_sortable(true)
+            ->set_type(column::TYPE_TEXT)
+            ->add_field("$maillogalias.toaddress");
 
         $columns[] = (new column(
             'fromaddress',
@@ -92,37 +103,74 @@ class mailqueue extends base {
             $this->get_entity_name()
         ))
             ->add_joins($this->get_joins())
-            ->add_fields("$maillogalias.fromaddress")
+            ->set_is_sortable(true)
             ->set_type(column::TYPE_TEXT)
-            ->set_is_sortable(true);
-        $columns[] = (new column(
-            'toaddress',
-            new lang_string('toaddress', 'local_maillog'),
-            $this->get_entity_name()
-        ))
-            ->add_joins($this->get_joins())
-            ->add_fields("$maillogalias.toaddress")
-            ->set_type(column::TYPE_TEXT)
-            ->set_is_sortable(true);
+            ->add_field("$maillogalias.fromaddress");
+
         $columns[] = (new column(
             'subject',
             new lang_string('subject', 'local_maillog'),
             $this->get_entity_name()
         ))
             ->add_joins($this->get_joins())
-            ->add_fields("$maillogalias.subject")
+            ->set_is_sortable(true)
             ->set_type(column::TYPE_TEXT)
-            ->set_is_sortable(true);
+            ->add_field("$maillogalias.subject");
+
+        $columns[] = (new column(
+            'messagetext',
+            new lang_string('message'),
+            $this->get_entity_name()
+        ))
+            ->add_joins($this->get_joins())
+            ->set_is_sortable(true)
+            ->set_type(column::TYPE_TEXT)
+            ->add_field("{$maillogalias}.messagetext");
+
+        $columns[] = (new column(
+            'hasattachment',
+            new lang_string('hasattachment', 'local_maillog'),
+            $this->get_entity_name()
+        ))
+            ->add_joins($this->get_joins())
+            ->set_is_sortable(true)
+            ->set_type(column::TYPE_BOOLEAN)
+            ->add_field("CASE WHEN {$maillogalias}.attachname = '' THEN 0 ELSE 1 END", 'hasattachment')
+            ->add_callback([format::class, 'boolean_as_text']);
+
         $columns[] = (new column(
             'timesent',
             new lang_string('timequeued', 'local_maillog'),
             $this->get_entity_name()
         ))
             ->add_joins($this->get_joins())
-            ->add_fields("$maillogalias.timesent")
-            ->set_type(column::TYPE_TIMESTAMP)
             ->set_is_sortable(true)
-            ->set_callback([format::class, 'userdate']);
+            ->set_type(column::TYPE_TIMESTAMP)
+            ->add_field("{$maillogalias}.timesent")
+            ->set_callback([format::class, 'userdate'], get_string('strftimerecentfullish', 'local_maillog'));
+
+        $columns[] = (new column(
+            'originscript',
+            new lang_string('originscript', 'local_maillog'),
+            $this->get_entity_name()
+        ))
+            ->add_joins($this->get_joins())
+            ->set_is_sortable(true)
+            ->set_type(column::TYPE_TEXT)
+            ->add_field("{$maillogalias}.originscript");
+
+        $columns[] = (new column(
+            'status',
+            new lang_string('status'),
+            $this->get_entity_name()
+        ))
+            ->add_joins($this->get_joins())
+            ->set_is_sortable(true)
+            ->set_type(column::TYPE_TEXT)
+            ->add_field("{$maillogalias}.queuestatus")
+            ->add_callback(static function(string $value): string {
+                return $value == LOCAL_MAILLOG_STATUS_QUEUED ? 'queued' : 'pending send';
+            });
 
         return $columns;
     }
@@ -136,7 +184,24 @@ class mailqueue extends base {
         $filters = [];
         $maillogalias = $this->get_table_alias('mail_log');
 
-        // Filter on subject
+        $filters[] = (new filter(
+            text::class,
+            'toaddress',
+            new lang_string('toaddress', 'local_maillog'),
+            $this->get_entity_name(),
+            "$maillogalias.toaddress"
+        ))
+            ->add_joins($this->get_joins());
+
+        $filters[] = (new filter(
+            text::class,
+            'fromaddress',
+            new lang_string('fromaddress', 'local_maillog'),
+            $this->get_entity_name(),
+            "$maillogalias.fromaddress"
+        ))
+            ->add_joins($this->get_joins());
+
         $filters[] = (new filter(
             text::class,
             'subject',
@@ -146,13 +211,39 @@ class mailqueue extends base {
         ))
             ->add_joins($this->get_joins());
 
-        // Filter on time sent
+        $filters[] = (new filter(
+            text::class,
+            'messagetext',
+            new lang_string('message'),
+            $this->get_entity_name(),
+            "$maillogalias.messagetext"
+        ))
+            ->add_joins($this->get_joins());
+
         $filters[] = (new filter(
             date::class,
             'timesent',
             new lang_string('timequeued', 'local_maillog'),
             $this->get_entity_name(),
             "$maillogalias.timesent"
+        ))
+            ->add_joins($this->get_joins());
+
+        $filters[] = (new filter(
+            text::class,
+            'originscript',
+            new lang_string('originscript', 'local_maillog'),
+            $this->get_entity_name(),
+            "$maillogalias.originscript"
+        ))
+            ->add_joins($this->get_joins());
+
+        $filters[] = (new filter(
+            text::class,
+            'status',
+            new lang_string('status'),
+            $this->get_entity_name(),
+            "$maillogalias.queuestatus"
         ))
             ->add_joins($this->get_joins());
 

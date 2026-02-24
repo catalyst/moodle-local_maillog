@@ -23,21 +23,26 @@
  */
 
 require_once('../../config.php');
-require_once("{$CFG->libdir}/adminlib.php");
 
 use core_reportbuilder\system_report_factory;
-use local_maillog\reportbuilder\local\systemreports\maillog_report;
+use local_maillog\local\systemreports\logreport;
 
-$PAGE->set_url(new \moodle_url('/local/maillog/maillogreport.php'));
-$PAGE->set_context(context_system::instance());
-$PAGE->set_pagelayout('report');
-$PAGE->add_body_class('limitedwidth');
+require_login();
+$context = \context_system::instance();
+
+$PAGE->set_context($context);
+$PAGE->set_url(new \moodle_url('/local/maillog/maillog.php'));
+$PAGE->set_pagelayout('admin');
+
 $strheading = get_string('maillog', 'local_maillog');
+
+$PAGE->navbar->add($strheading);
+
 $PAGE->set_title($strheading);
 $PAGE->set_heading($strheading);
 
 echo $OUTPUT->header();
-$report = system_report_factory::create(maillog_report::class, context_system::instance());
+$report = system_report_factory::create(logreport::class, $context);
 
 echo $report->output();
 echo $OUTPUT->footer();

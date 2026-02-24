@@ -26,6 +26,7 @@ namespace local_maillog\local\systemreports;
 
 use local_maillog\local\entities\mailqueue;
 use core_reportbuilder\system_report;
+use core_reportbuilder\local\helpers\database;
 use core_reportbuilder\local\entities\user;
 use core_reportbuilder\local\report\action;
 
@@ -58,8 +59,11 @@ class queuereport extends system_report {
             ->add_join("LEFT JOIN {user} {$entityuseralias} ON {$entityuseralias}.id = {$entitymainalias}.userid")
         );
 
-        $wheresql = "$entitymainalias.queuestatus = 1";
-        $this->add_base_condition_sql($wheresql);
+        require_once(__DIR__ . '/../helper.php');
+        $statusparam = database::generate_param_name();
+        $wheresql = "$entitymainalias.queuestatus <> :{$statusparam}";
+        $params = [$statusparam => LOCAL_MAILLOG_STATUS_SENT];
+        $this->add_base_condition_sql($wheresql, $params);
 
         // Now we can call our helper methods to add the content we want to include in the report.
         $this->add_columns();
@@ -84,11 +88,15 @@ class queuereport extends system_report {
      */
     public function add_columns(): void {
         $columns = [
+            'mailqueue:toaddress',
             'user:fullnamewithlink',
             'mailqueue:fromaddress',
-            'mailqueue:toaddress',
             'mailqueue:subject',
-            'mailqueue:timesent'
+            'mailqueue:messagetext',
+            'mailqueue:hasattachment',
+            'mailqueue:timesent',
+            'mailqueue:originscript',
+            'mailqueue:status',
         ];
 
         $this->add_columns_from_entities($columns);
@@ -102,9 +110,14 @@ class queuereport extends system_report {
      */
     protected function add_filters(): void {
         $filters = [
+            'mailqueue:toaddress',
             'user:fullname',
+            'mailqueue:fromaddress',
             'mailqueue:subject',
-            'mailqueue:timesent'
+            'mailqueue:messagetext',
+            'mailqueue:timesent',
+            'mailqueue:originscript',
+            'mailqueue:status',
         ];
 
         $this->add_filters_from_entities($filters);
@@ -123,7 +136,7 @@ class queuereport extends system_report {
             new \pix_icon('t/email', ''),
             ['class' => 'text-info'],
             false,
-            new \lang_string('send', 'local_maillog')
+            new \lang_string('send', 'core_message')
         ));
 
         // Delete action.

@@ -32,6 +32,7 @@ use core_external\external_single_structure;
 use core_external\external_value;
 use core_external\external_warnings;
 use core_external\util;
+use local_maillog\local\helper as local_helper;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -66,7 +67,7 @@ class local_maillog_external extends external_api {
         // Validate params.
         foreach ($params['messageids'] as $messageid) {
             $logid = validate_param($messageid, PARAM_INT);
-            \local_maillog\helper::schedule_send([$logid]);
+            local_helper::schedule_send([$logid]);
         }
         return null;
     }
@@ -110,7 +111,7 @@ class local_maillog_external extends external_api {
         // Validate params.
         foreach ($params['messageids'] as $messageid) {
             $logid = validate_param($messageid, PARAM_INT);
-            \local_maillog\helper::delete([$logid]);
+            local_helper::delete([$logid]);
         }
         return null;
     }

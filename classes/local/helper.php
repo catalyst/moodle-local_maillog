@@ -24,10 +24,11 @@
  */
 
 
-namespace local_maillog;
+namespace local_maillog\local;
 
 defined('MOODLE_INTERNAL') or die();
 
+define('LOCAL_MAILLOG_STATUS_SENT', 0);
 define('LOCAL_MAILLOG_STATUS_QUEUED', 1);
 define('LOCAL_MAILLOG_STATUS_PENDINGSEND', 2);
 
@@ -58,7 +59,7 @@ class helper {
             if (empty($ids)) {
                 break;
             }
-            \local_maillog\helper::delete($ids);
+            \local_maillog\local\helper::delete($ids);
         }
     }
 
@@ -110,7 +111,7 @@ class helper {
             // Copy attachment to a safe location, so we can access it later
             $todb = new \stdClass();
             $todb->id = $newrecordid;
-            $todb->attachment = \local_maillog\helper::copy_attachment($newrecordid, $attachment, $attachname);
+            $todb->attachment = \local_maillog\local\helper::copy_attachment($newrecordid, $attachment, $attachname);
 
             $DB->update_record('mail_log', $todb);
         }
@@ -207,7 +208,7 @@ class helper {
                 if (!empty($mail->attachment)) {
                     unlink($mail->attachment);
                 }
-                \local_maillog\helper::delete(array($mail->id));
+                \local_maillog\local\helper::delete(array($mail->id));
                 $count++;
             }
         }

@@ -16,7 +16,7 @@
 
 namespace local_maillog\local\entities;
 
-use core_reportbuilder\local\filters\{date, duration, number, text};
+use core_reportbuilder\local\filters\{date, text};
 use core_reportbuilder\local\report\{column, filter};
 use core_reportbuilder\local\entities\base;
 use core_reportbuilder\local\helpers\format;
@@ -40,8 +40,6 @@ class maillog extends base {
     protected function get_default_tables(): array {
         return [
             'mail_log',
-            'user',
-            'course',
         ];
     }
 
@@ -77,10 +75,6 @@ class maillog extends base {
         return $this;
     }
 
-
-    // ADD ALL COLUMNS FROM MAIL_LOG TABLE
-
-
     /**
      * Add extra columns to course report.
      * @return array
@@ -89,10 +83,9 @@ class maillog extends base {
     protected function get_all_columns(): array {
         $maillogalias = $this->get_table_alias('mail_log');
 
-        // User ID column
         $columns[] = (new column(
             'userid',
-            new lang_string('userid', 'local_maillog'),
+            new lang_string('user'),
             $this->get_entity_name()
         ))
             ->add_joins($this->get_joins())
@@ -100,7 +93,6 @@ class maillog extends base {
             ->set_type(column::TYPE_INTEGER)
             ->add_field("{$maillogalias}.userid");
 
-        // From object column
         $columns[] = (new column(
             'fromobj',
             new lang_string('fromobj', 'local_maillog'),
@@ -111,7 +103,6 @@ class maillog extends base {
             ->set_type(column::TYPE_TEXT)
             ->add_field("{$maillogalias}.fromobj");
 
-        // To address column
         $columns[] = (new column(
             'toaddress',
             new lang_string('toaddress', 'local_maillog'),
@@ -122,7 +113,6 @@ class maillog extends base {
             ->set_type(column::TYPE_TEXT)
             ->add_field("{$maillogalias}.toaddress");
 
-        // From address column
         $columns[] = (new column(
             'fromaddress',
             new lang_string('fromaddress', 'local_maillog'),
@@ -133,7 +123,6 @@ class maillog extends base {
             ->set_type(column::TYPE_TEXT)
             ->add_field("{$maillogalias}.fromaddress");
 
-        // Subject column
         $columns[] = (new column(
             'subject',
             new lang_string('subject', 'local_maillog'),
@@ -144,10 +133,9 @@ class maillog extends base {
             ->set_type(column::TYPE_TEXT)
             ->add_field("{$maillogalias}.subject");
 
-        // Message text column
         $columns[] = (new column(
             'messagetext',
-            new lang_string('messagetext', 'local_maillog'),
+            new lang_string('message'),
             $this->get_entity_name()
         ))
             ->add_joins($this->get_joins())
@@ -155,10 +143,9 @@ class maillog extends base {
             ->set_type(column::TYPE_TEXT)
             ->add_field("{$maillogalias}.messagetext");
 
-        // Message HTML column
         $columns[] = (new column(
             'messagehtml',
-            new lang_string('messagehtml', 'local_maillog'),
+            new lang_string('messagebody'),
             $this->get_entity_name()
         ))
             ->add_joins($this->get_joins())
@@ -166,10 +153,20 @@ class maillog extends base {
             ->set_type(column::TYPE_TEXT)
             ->add_field("{$maillogalias}.messagehtml");
 
-        // Attachment column
+        $columns[] = (new column(
+            'hasattachment',
+            new lang_string('hasattachment', 'local_maillog'),
+            $this->get_entity_name()
+        ))
+            ->add_joins($this->get_joins())
+            ->set_is_sortable(true)
+            ->set_type(column::TYPE_BOOLEAN)
+            ->add_field("CASE WHEN {$maillogalias}.attachname = '' THEN 0 ELSE 1 END", 'hasattachment')
+            ->add_callback([format::class, 'boolean_as_text']);
+
         $columns[] = (new column(
             'attachment',
-            new lang_string('attachment', 'local_maillog'),
+            new lang_string('attachment', 'core_repository'),
             $this->get_entity_name()
         ))
             ->add_joins($this->get_joins())
@@ -177,7 +174,6 @@ class maillog extends base {
             ->set_type(column::TYPE_TEXT)
             ->add_field("{$maillogalias}.attachment");
 
-        // Attachname column
         $columns[] = (new column(
             'attachname',
             new lang_string('attachname', 'local_maillog'),
@@ -188,7 +184,6 @@ class maillog extends base {
             ->set_type(column::TYPE_TEXT)
             ->add_field("{$maillogalias}.attachname");
 
-        // Use true address column
         $columns[] = (new column(
             'usetrueaddress',
             new lang_string('usetrueaddress', 'local_maillog'),
@@ -196,13 +191,13 @@ class maillog extends base {
         ))
             ->add_joins($this->get_joins())
             ->set_is_sortable(true)
-            ->set_type(column::TYPE_INTEGER)
-            ->add_field("{$maillogalias}.usetrueaddress");
+            ->set_type(column::TYPE_BOOLEAN)
+            ->add_field("{$maillogalias}.usetrueaddress")
+            ->add_callback([format::class, 'boolean_as_text']);
 
-        // Reply to column
         $columns[] = (new column(
             'replyto',
-            new lang_string('replyto', 'local_maillog'),
+            new lang_string('replytoaddress', 'local_maillog'),
             $this->get_entity_name()
         ))
             ->add_joins($this->get_joins())
@@ -210,7 +205,6 @@ class maillog extends base {
             ->set_type(column::TYPE_TEXT)
             ->add_field("{$maillogalias}.replyto");
 
-        // Reply to name column
         $columns[] = (new column(
             'replytoname',
             new lang_string('replytoname', 'local_maillog'),
@@ -221,7 +215,6 @@ class maillog extends base {
             ->set_type(column::TYPE_TEXT)
             ->add_field("{$maillogalias}.replytoname");
 
-        // Word wrap width column
         $columns[] = (new column(
             'wordwrapwidth',
             new lang_string('wordwrapwidth', 'local_maillog'),
@@ -232,7 +225,6 @@ class maillog extends base {
             ->set_type(column::TYPE_INTEGER)
             ->add_field("{$maillogalias}.wordwrapwidth");
 
-        // Time sent column
         $columns[] = (new column(
             'timesent',
             new lang_string('timesent', 'local_maillog'),
@@ -242,20 +234,19 @@ class maillog extends base {
             ->set_is_sortable(true)
             ->set_type(column::TYPE_TIMESTAMP)
             ->add_field("{$maillogalias}.timesent")
-            ->add_callback([format::class, 'userdate'], get_string('strftimedatetimeshortaccurate', 'core_langconfig'));
+            ->add_callback([format::class, 'userdate'], get_string('strftimerecentfullish', 'local_maillog'));
 
-        // Success column
         $columns[] = (new column(
             'success',
-            new lang_string('success', 'local_maillog'),
+            new lang_string('success'),
             $this->get_entity_name()
         ))
             ->add_joins($this->get_joins())
             ->set_is_sortable(true)
-            ->set_type(column::TYPE_INTEGER)
-            ->add_field("{$maillogalias}.success");
+            ->set_type(column::TYPE_BOOLEAN)
+            ->add_field("{$maillogalias}.success")
+            ->add_callback([format::class, 'boolean_as_text']);
 
-        // Return message column
         $columns[] = (new column(
             'returnmsg',
             new lang_string('returnmsg', 'local_maillog'),
@@ -266,10 +257,9 @@ class maillog extends base {
             ->set_type(column::TYPE_TEXT)
             ->add_field("{$maillogalias}.returnmsg");
 
-        // Queue status column
         $columns[] = (new column(
             'queuestatus',
-            new lang_string('queuestatus', 'local_maillog'),
+            new lang_string('status'),
             $this->get_entity_name()
         ))
             ->add_joins($this->get_joins())
@@ -277,7 +267,6 @@ class maillog extends base {
             ->set_type(column::TYPE_BOOLEAN)
             ->add_field("{$maillogalias}.queuestatus");
 
-        // Origin script column
         $columns[] = (new column(
             'originscript',
             new lang_string('originscript', 'local_maillog'),
@@ -301,17 +290,6 @@ class maillog extends base {
         $filters = [];
         $maillogalias = $this->get_table_alias('mail_log');
 
-        // User ID filter
-        $filters[] = (new filter(
-            number::class,
-            'userid',
-            new lang_string('userid', 'local_maillog'),
-            $this->get_entity_name(),
-            "$maillogalias.userid"
-        ))
-            ->add_joins($this->get_joins());
-
-        // From object filter
         $filters[] = (new filter(
             text::class,
             'fromobj',
@@ -321,7 +299,6 @@ class maillog extends base {
         ))
             ->add_joins($this->get_joins());
 
-        // To address filter
         $filters[] = (new filter(
             text::class,
             'toaddress',
@@ -331,7 +308,6 @@ class maillog extends base {
         ))
             ->add_joins($this->get_joins());
 
-        // From address filter
         $filters[] = (new filter(
             text::class,
             'fromaddress',
@@ -341,7 +317,6 @@ class maillog extends base {
         ))
             ->add_joins($this->get_joins());
 
-        // Subject filter
         $filters[] = (new filter(
             text::class,
             'subject',
@@ -351,37 +326,33 @@ class maillog extends base {
         ))
             ->add_joins($this->get_joins());
 
-        // Message text filter
         $filters[] = (new filter(
             text::class,
             'messagetext',
-            new lang_string('messagetext', 'local_maillog'),
+            new lang_string('message'),
             $this->get_entity_name(),
             "$maillogalias.messagetext"
         ))
             ->add_joins($this->get_joins());
 
-        // Message HTML filter
         $filters[] = (new filter(
             text::class,
             'messagehtml',
-            new lang_string('messagehtml', 'local_maillog'),
+            new lang_string('messagebody'),
             $this->get_entity_name(),
             "$maillogalias.messagehtml"
         ))
             ->add_joins($this->get_joins());
 
-        // Attachment filter
         $filters[] = (new filter(
             text::class,
             'attachment',
-            new lang_string('attachment', 'local_maillog'),
+            new lang_string('attachment', 'core_repository'),
             $this->get_entity_name(),
             "$maillogalias.attachment"
         ))
             ->add_joins($this->get_joins());
 
-        // Attachname filter
         $filters[] = (new filter(
             text::class,
             'attachname',
@@ -391,9 +362,8 @@ class maillog extends base {
         ))
             ->add_joins($this->get_joins());
 
-        // Use true address filter
         $filters[] = (new filter(
-            number::class,
+            text::class,
             'usetrueaddress',
             new lang_string('usetrueaddress', 'local_maillog'),
             $this->get_entity_name(),
@@ -401,17 +371,15 @@ class maillog extends base {
         ))
             ->add_joins($this->get_joins());
 
-        // Reply to filter
         $filters[] = (new filter(
             text::class,
             'replyto',
-            new lang_string('replyto', 'local_maillog'),
+            new lang_string('replytoaddress', 'local_maillog'),
             $this->get_entity_name(),
             "$maillogalias.replyto"
         ))
             ->add_joins($this->get_joins());
 
-        // Reply to name filter
         $filters[] = (new filter(
             text::class,
             'replytoname',
@@ -421,19 +389,8 @@ class maillog extends base {
         ))
             ->add_joins($this->get_joins());
 
-        // Word wrap width filter
         $filters[] = (new filter(
-            number::class,
-            'wordwrapwidth',
-            new lang_string('wordwrapwidth', 'local_maillog'),
-            $this->get_entity_name(),
-            "$maillogalias.wordwrapwidth"
-        ))
-            ->add_joins($this->get_joins());
-
-        // Time sent filter
-        $filters[] = (new filter(
-            number::class,
+            date::class,
             'timesent',
             new lang_string('timesent', 'local_maillog'),
             $this->get_entity_name(),
@@ -441,43 +398,39 @@ class maillog extends base {
         ))
             ->add_joins($this->get_joins());
 
-        // Success filter
         $filters[] = (new filter(
-        number::class,
-        'success',
-        new lang_string('success', 'local_maillog'),
-        $this->get_entity_name(),
-        "$maillogalias.success"
+            text::class,
+            'success',
+            new lang_string('success'),
+            $this->get_entity_name(),
+            "$maillogalias.success"
         ))
             ->add_joins($this->get_joins());
 
-        // Return message filter
         $filters[] = (new filter(
-        text::class,
-        'returnmsg',
-        new lang_string('returnmsg', 'local_maillog'),
-        $this->get_entity_name(),
-        "$maillogalias.returnmsg"
+            text::class,
+            'returnmsg',
+            new lang_string('returnmsg', 'local_maillog'),
+            $this->get_entity_name(),
+            "$maillogalias.returnmsg"
         ))
             ->add_joins($this->get_joins());
 
-        // Queue status filter
         $filters[] = (new filter(
-        text::class,
-        'queuestatus',
-        new lang_string('queuestatus', 'local_maillog'),
-        $this->get_entity_name(),
-        "$maillogalias.queuestatus"
+            text::class,
+            'queuestatus',
+            new lang_string('status'),
+            $this->get_entity_name(),
+            "$maillogalias.queuestatus"
         ))
             ->add_joins($this->get_joins());
 
-        // Origin script filter
         $filters[] = (new filter(
-        text::class,
-        'originscript',
-        new lang_string('originscript', 'local_maillog'),
-        $this->get_entity_name(),
-        "$maillogalias.originscript"
+            text::class,
+            'originscript',
+            new lang_string('originscript', 'local_maillog'),
+            $this->get_entity_name(),
+            "$maillogalias.originscript"
         ))
             ->add_joins($this->get_joins());
 
