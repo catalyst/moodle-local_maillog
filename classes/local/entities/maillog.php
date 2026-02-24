@@ -242,7 +242,7 @@ class maillog extends base {
             ->set_is_sortable(true)
             ->set_type(column::TYPE_TIMESTAMP)
             ->add_field("{$maillogalias}.timesent")
-            ->add_callback([format::class, 'userdate'], get_string('strftimedatetimeshortaccurate', 'core_langconfig'));
+            ->add_callback([format::class, 'userdate'], get_string('strftimerecentfullish', 'local_maillog'));
 
         // Success column
         $columns[] = (new column(

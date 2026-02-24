@@ -43,6 +43,7 @@ $string['subject'] = 'Subject';
 $string['hasattachment'] = 'Has attachment';
 $string['timesent'] = 'Time sent';
 $string['timequeued'] = 'Time queued';
+$string['strftimerecentfullish'] = '%a, %d %b %Y, %H:%M';
 $string['originscript'] = 'Originating script';
 $string['pendingsend'] = 'Pending send';
 $string['queued'] = 'Queued';

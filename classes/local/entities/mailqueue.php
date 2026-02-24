@@ -122,7 +122,7 @@ class mailqueue extends base {
             ->add_fields("$maillogalias.timesent")
             ->set_type(column::TYPE_TIMESTAMP)
             ->set_is_sortable(true)
-            ->set_callback([format::class, 'userdate']);
+            ->set_callback([format::class, 'userdate'], get_string('strftimerecentfullish', 'local_maillog'));
 
         return $columns;
     }
