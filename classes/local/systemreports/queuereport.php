@@ -127,7 +127,7 @@ class queuereport extends system_report {
             new \pix_icon('t/email', ''),
             ['class' => 'text-info'],
             false,
-            new \lang_string('send', 'local_maillog')
+            new \lang_string('send', 'core_message')
         ));
 
         // Delete action.

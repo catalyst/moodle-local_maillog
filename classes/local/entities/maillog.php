@@ -92,7 +92,7 @@ class maillog extends base {
         // User ID column
         $columns[] = (new column(
             'userid',
-            new lang_string('userid', 'local_maillog'),
+            new lang_string('user'),
             $this->get_entity_name()
         ))
             ->add_joins($this->get_joins())
@@ -147,7 +147,7 @@ class maillog extends base {
         // Message text column
         $columns[] = (new column(
             'messagetext',
-            new lang_string('messagetext', 'local_maillog'),
+            new lang_string('message'),
             $this->get_entity_name()
         ))
             ->add_joins($this->get_joins())
@@ -158,7 +158,7 @@ class maillog extends base {
         // Message HTML column
         $columns[] = (new column(
             'messagehtml',
-            new lang_string('messagehtml', 'local_maillog'),
+            new lang_string('messagebody'),
             $this->get_entity_name()
         ))
             ->add_joins($this->get_joins())
@@ -169,7 +169,7 @@ class maillog extends base {
         // Attachment column
         $columns[] = (new column(
             'attachment',
-            new lang_string('attachment', 'local_maillog'),
+            new lang_string('attachment', 'core_repository'),
             $this->get_entity_name()
         ))
             ->add_joins($this->get_joins())
@@ -202,7 +202,7 @@ class maillog extends base {
         // Reply to column
         $columns[] = (new column(
             'replyto',
-            new lang_string('replyto', 'local_maillog'),
+            new lang_string('replytoaddress', 'local_maillog'),
             $this->get_entity_name()
         ))
             ->add_joins($this->get_joins())
@@ -247,7 +247,7 @@ class maillog extends base {
         // Success column
         $columns[] = (new column(
             'success',
-            new lang_string('success', 'local_maillog'),
+            new lang_string('success'),
             $this->get_entity_name()
         ))
             ->add_joins($this->get_joins())
@@ -269,7 +269,7 @@ class maillog extends base {
         // Queue status column
         $columns[] = (new column(
             'queuestatus',
-            new lang_string('queuestatus', 'local_maillog'),
+            new lang_string('status'),
             $this->get_entity_name()
         ))
             ->add_joins($this->get_joins())
@@ -355,7 +355,7 @@ class maillog extends base {
         $filters[] = (new filter(
             text::class,
             'messagetext',
-            new lang_string('messagetext', 'local_maillog'),
+            new lang_string('message'),
             $this->get_entity_name(),
             "$maillogalias.messagetext"
         ))
@@ -365,7 +365,7 @@ class maillog extends base {
         $filters[] = (new filter(
             text::class,
             'messagehtml',
-            new lang_string('messagehtml', 'local_maillog'),
+            new lang_string('messagebody'),
             $this->get_entity_name(),
             "$maillogalias.messagehtml"
         ))
@@ -375,7 +375,7 @@ class maillog extends base {
         $filters[] = (new filter(
             text::class,
             'attachment',
-            new lang_string('attachment', 'local_maillog'),
+            new lang_string('attachment', 'core_repository'),
             $this->get_entity_name(),
             "$maillogalias.attachment"
         ))
@@ -405,7 +405,7 @@ class maillog extends base {
         $filters[] = (new filter(
             text::class,
             'replyto',
-            new lang_string('replyto', 'local_maillog'),
+            new lang_string('replytoaddress', 'local_maillog'),
             $this->get_entity_name(),
             "$maillogalias.replyto"
         ))
@@ -445,7 +445,7 @@ class maillog extends base {
         $filters[] = (new filter(
         number::class,
         'success',
-        new lang_string('success', 'local_maillog'),
+        new lang_string('success'),
         $this->get_entity_name(),
         "$maillogalias.success"
         ))
@@ -465,7 +465,7 @@ class maillog extends base {
         $filters[] = (new filter(
         text::class,
         'queuestatus',
-        new lang_string('queuestatus', 'local_maillog'),
+        new lang_string('status'),
         $this->get_entity_name(),
         "$maillogalias.queuestatus"
         ))
