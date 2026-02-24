@@ -40,6 +40,6 @@ if ($hassiteconfig) { // needs this condition or there is error on login page
         new lang_string('maxdays', 'local_maillog'), new lang_string('maxdaysinfo', 'local_maillog'), 7, $daysoptions));
 
     // Add log report to reports.
-    $ADMIN->add('reports', new admin_externalpage('maillogreport',
-        get_string('pluginname', 'local_maillog'), new moodle_url('/local/maillog/maillogreport.php')));
+    $ADMIN->add('reports', new admin_externalpage('maillog',
+        get_string('pluginname', 'local_maillog'), new moodle_url('/local/maillog/maillog.php')));
 }

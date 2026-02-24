@@ -26,9 +26,9 @@ require_once('../../config.php');
 require_once("{$CFG->libdir}/adminlib.php");
 
 use core_reportbuilder\system_report_factory;
-use local_maillog\reportbuilder\local\systemreports\maillog_report;
+use local_maillog\local\systemreports\maillog_report;
 
-$PAGE->set_url(new \moodle_url('/local/maillog/maillogreport.php'));
+$PAGE->set_url(new \moodle_url('/local/maillog/maillog.php'));
 $PAGE->set_context(context_system::instance());
 $PAGE->set_pagelayout('report');
 $PAGE->add_body_class('limitedwidth');

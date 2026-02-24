@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace local_maillog\reportbuilder\local\systemreports;
+namespace local_maillog\local\systemreports;
 
 use core_reportbuilder\system_report;
 use core_reportbuilder\local\entities\course;
@@ -39,7 +39,7 @@ use core_reportbuilder\local\helpers\database;
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-class maillog_report extends system_report {
+class logreport extends system_report {
     protected function initialise(): void {
         // Our main entity, it contains all of the column definitions that we need.
         $entitymain = new maillog();
