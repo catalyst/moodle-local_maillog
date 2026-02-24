@@ -26,10 +26,10 @@
 defined('MOODLE_INTERNAL') || die();
 
 // Extra 0 due to broken previous version number.
-$plugin->version   = 20260224000;
-$plugin->release   = 2026022400;
-$plugin->requires  = 2024100700; //Moodle 4.5
+$plugin->version   = 20260225000;
+$plugin->release   = 2026022500;
+$plugin->requires  = 2025100600; //Moodle 5.1
 $plugin->cron      = 0;
 $plugin->component = 'local_maillog';
 $plugin->maturity  = MATURITY_STABLE;
-$plugin->supported = [405,500];
+$plugin->supported = [501,502];

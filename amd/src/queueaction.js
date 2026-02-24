@@ -31,7 +31,7 @@ import * as reportEvents from 'core_reportbuilder/local/events';
 import * as reportSelectors from 'core_reportbuilder/local/selectors';
 
 const SELECTORS = {
-    CHECKBOXES: '[data-togglegroup="report-select-all"][data-toggle="slave"]:checked',
+    CHECKBOXES: '[data-togglegroup="report-select-all"][data-toggle="target"]:checked',
     SENDBUTTON: '[data-action="queue-send-selected"]',
     DELETEBUTTON: '[data-action="queue-delete-selected"]',
 };
