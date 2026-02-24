@@ -28,6 +28,7 @@ namespace local_maillog\local;
 
 defined('MOODLE_INTERNAL') or die();
 
+define('LOCAL_MAILLOG_STATUS_SENT', 0);
 define('LOCAL_MAILLOG_STATUS_QUEUED', 1);
 define('LOCAL_MAILLOG_STATUS_PENDINGSEND', 2);
 

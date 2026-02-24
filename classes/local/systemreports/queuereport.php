@@ -28,6 +28,7 @@ use local_maillog\local\entities\mailqueue;
 use core_reportbuilder\system_report;
 use core_reportbuilder\local\entities\user;
 use core_reportbuilder\local\report\action;
+use core_reportbuilder\local\helpers\database;
 
 class queuereport extends system_report {
 
@@ -58,8 +59,11 @@ class queuereport extends system_report {
             ->add_join("LEFT JOIN {user} {$entityuseralias} ON {$entityuseralias}.id = {$entitymainalias}.userid")
         );
 
-        $wheresql = "$entitymainalias.queuestatus = 1";
-        $this->add_base_condition_sql($wheresql);
+        require_once(__DIR__ . '/../helper.php');
+        $statusparam = database::generate_param_name();
+        $wheresql = "$entitymainalias.queuestatus <> :{$statusparam}";
+        $params = [$statusparam => LOCAL_MAILLOG_STATUS_SENT];
+        $this->add_base_condition_sql($wheresql, $params);
 
         // Now we can call our helper methods to add the content we want to include in the report.
         $this->add_columns();

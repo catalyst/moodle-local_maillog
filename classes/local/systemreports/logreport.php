@@ -21,6 +21,7 @@ use core_reportbuilder\local\entities\course;
 use core_course\reportbuilder\local\entities\course_category;
 use core_course\reportbuilder\local\entities\enrolment;
 use core_enrol\reportbuilder\local\entities\enrol;
+use core_reportbuilder\local\helpers\database;
 use core_reportbuilder\local\entities\user;
 use core_role\reportbuilder\local\entities\role;
 use local_maillog\local\entities\maillog;
@@ -28,7 +29,6 @@ use core_group\reportbuilder\local\entities\group;
 use core_cohort\reportbuilder\local\entities\cohort;
 use core_course\reportbuilder\local\entities\access;
 use core_course\reportbuilder\local\entities\completion;
-use core_reportbuilder\local\helpers\database;
 
 /**
  * Base class for system reports
@@ -57,6 +57,12 @@ class logreport extends system_report {
         $this->add_entity($entityuser->add_join(
             "LEFT JOIN {user} {$entituseralias} ON {$entituseralias}.id = {$entitymainalias}.userid"
         ));
+
+        require_once(__DIR__ . '/../helper.php');
+        $statusparam = database::generate_param_name();
+        $wheresql = "$entitymainalias.queuestatus = :{$statusparam}";
+        $params = [$statusparam => LOCAL_MAILLOG_STATUS_SENT];
+        $this->add_base_condition_sql($wheresql, $params);
 
         // Now we can call our helper methods to add the content we want to include in the report.
         $this->add_columns();
