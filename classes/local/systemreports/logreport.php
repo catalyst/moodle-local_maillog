@@ -17,18 +17,9 @@
 namespace local_maillog\local\systemreports;
 
 use core_reportbuilder\system_report;
-use core_reportbuilder\local\entities\course;
-use core_course\reportbuilder\local\entities\course_category;
-use core_course\reportbuilder\local\entities\enrolment;
-use core_enrol\reportbuilder\local\entities\enrol;
 use core_reportbuilder\local\helpers\database;
 use core_reportbuilder\local\entities\user;
-use core_role\reportbuilder\local\entities\role;
 use local_maillog\local\entities\maillog;
-use core_group\reportbuilder\local\entities\group;
-use core_cohort\reportbuilder\local\entities\cohort;
-use core_course\reportbuilder\local\entities\access;
-use core_course\reportbuilder\local\entities\completion;
 
 /**
  * Base class for system reports
@@ -67,7 +58,6 @@ class logreport extends system_report {
         // Now we can call our helper methods to add the content we want to include in the report.
         $this->add_columns();
         $this->add_filters();
-        // $this->add_actions();
 
         // Set if report can be downloaded.
         $this->set_downloadable(true, get_string('pluginname', 'local_maillog'));
@@ -100,11 +90,14 @@ class logreport extends system_report {
     public function add_columns(): void {
         $columns = [
             'maillog:toaddress',
+            'user:fullnamewithlink',
             'maillog:fromaddress',
             'maillog:subject',
-            'maillog:messagehtml',
+            'maillog:messagetext',
+            'maillog:hasattachment',
             'maillog:timesent',
-            'user:fullnamewithlink'
+            'maillog:originscript',
+            'maillog:success',
         ];
 
         $this->add_columns_from_entities($columns);
@@ -119,17 +112,16 @@ class logreport extends system_report {
     protected function add_filters(): void {
         $filters = [
             'maillog:toaddress',
+            'user:fullname',
             'maillog:fromaddress',
             'maillog:subject',
-            'maillog:messagehtml',
+            'maillog:messagetext',
             'maillog:timesent',
-            'user:fullname'
+            'maillog:originscript',
+            'maillog:success',
         ];
 
         $this->add_filters_from_entities($filters);
     }
-
-
-    // ADD ACTIONS (e.g. actions in a settings cog on the rhs of the report)
 
 }

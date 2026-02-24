@@ -26,9 +26,9 @@ namespace local_maillog\local\systemreports;
 
 use local_maillog\local\entities\mailqueue;
 use core_reportbuilder\system_report;
+use core_reportbuilder\local\helpers\database;
 use core_reportbuilder\local\entities\user;
 use core_reportbuilder\local\report\action;
-use core_reportbuilder\local\helpers\database;
 
 class queuereport extends system_report {
 
@@ -88,11 +88,15 @@ class queuereport extends system_report {
      */
     public function add_columns(): void {
         $columns = [
+            'mailqueue:toaddress',
             'user:fullnamewithlink',
             'mailqueue:fromaddress',
-            'mailqueue:toaddress',
             'mailqueue:subject',
-            'mailqueue:timesent'
+            'mailqueue:messagetext',
+            'mailqueue:hasattachment',
+            'mailqueue:timesent',
+            'mailqueue:originscript',
+            'mailqueue:status',
         ];
 
         $this->add_columns_from_entities($columns);
@@ -106,9 +110,14 @@ class queuereport extends system_report {
      */
     protected function add_filters(): void {
         $filters = [
+            'mailqueue:toaddress',
             'user:fullname',
+            'mailqueue:fromaddress',
             'mailqueue:subject',
-            'mailqueue:timesent'
+            'mailqueue:messagetext',
+            'mailqueue:timesent',
+            'mailqueue:originscript',
+            'mailqueue:status',
         ];
 
         $this->add_filters_from_entities($filters);

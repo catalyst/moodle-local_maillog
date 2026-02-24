@@ -24,7 +24,7 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
+require_once('../../config.php');
 
 use core_reportbuilder\system_report_factory;
 use local_maillog\local\systemreports\queuereport;
@@ -33,24 +33,16 @@ require_login();
 $context = \context_system::instance();
 require_capability('local/maillog:managequeue', $context);
 
-$sid = optional_param('sid', '0', PARAM_INT);
-$format = optional_param('format', '',PARAM_TEXT); //export format
-$debug = optional_param('debug', 0, PARAM_INT);
-
 $PAGE->set_context($context);
 $PAGE->set_url('/local/maillog/mailqueue.php');
-$PAGE->set_pagelayout('admin');
+$PAGE->set_pagelayout('report');
 
 $strheading = get_string('mailqueue', 'local_maillog');
 
-///
-/// Display the page
-///
 $PAGE->navbar->add(get_string('pluginname', 'local_maillog'), new moodle_url('/admin/settings.php', array('section' => 'local_maillog')));
 $PAGE->navbar->add($strheading);
 
 $PAGE->set_title($strheading);
-$PAGE->set_heading($strheading);
 
 echo $OUTPUT->header();
 echo $OUTPUT->heading($strheading, 1);
