@@ -69,7 +69,7 @@ class logreport extends system_report {
      * @return bool
      */
     protected function can_view(): bool {
-        return has_capability('moodle/site:config', \context_system::instance());
+        return has_capability('local/maillog:viewmaillog', \context_system::instance());
     }
 
     /**

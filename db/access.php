@@ -24,6 +24,15 @@
  */
 
 $capabilities = array(
+    'local/maillog:viewmaillog' => array(
+        'riskbitmask' => RISK_PERSONAL,
+        'captype' => 'read',
+        'contextlevel' => CONTEXT_SYSTEM,
+        'archetypes' => array(
+            'manager' => CAP_ALLOW,
+        )
+    ),
+
     // Ability to perform administrative tasks on the leadership framework
     'local/maillog:managequeue' => array(
     'riskbitmask'   => RISK_PERSONAL | RISK_DATALOSS | RISK_CONFIG,

@@ -34,6 +34,7 @@ $string['queuemails'] = 'Queue emails';
 $string['configqueuemails'] = 'Rather than sending out emails, queue emails for approval prior to sending out. <b>NOTE:</b> You must have logging enabled too, if you want to use this feature.<br><b><a href="{$a}">View queue here</a></b>';
 $string['maxdays'] = 'Max days to keep emails in log/queue';
 $string['maxdaysinfo'] = 'Any mail log entries older than the configured amount of days will be purged.';
+$string['maillog:viewmaillog'] = 'View mail log';
 $string['maillog:managequeue'] = 'Manage queue';
 $string['recordsall'] = '{$a} record(s) shown';
 $string['recordsshown'] = '{$a->countfiltered} of {$a->countall} records shown';
