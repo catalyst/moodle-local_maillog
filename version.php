@@ -26,7 +26,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 // Extra 0 due to broken previous version number.
-$plugin->version   = 20260224000;
+$plugin->version   = 20260224001;
 $plugin->release   = 2026022400;
 $plugin->requires  = 2024100700; //Moodle 4.5
 $plugin->cron      = 0;

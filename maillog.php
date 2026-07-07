@@ -29,6 +29,7 @@ use local_maillog\local\systemreports\logreport;
 
 require_login();
 $context = \context_system::instance();
+require_capability('local/maillog:viewmaillog', $context);
 
 $PAGE->set_context($context);
 $PAGE->set_url(new \moodle_url('/local/maillog/maillog.php'));
