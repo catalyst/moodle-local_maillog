@@ -71,6 +71,30 @@ class rb_source_maillog extends rb_base_source {
         return true;
     }
 
+    /**
+     * Inject mail log data for reportbuilder column and filter tests.
+     *
+     * @param totara_reportbuilder_column_test $testcase
+     */
+    public function phpunit_column_test_add_data(totara_reportbuilder_column_test $testcase) {
+        global $DB;
+
+        if (!PHPUNIT_TEST) {
+            throw new coding_exception('phpunit_column_test_add_data() cannot be used outside of unit tests');
+        }
+
+        $user = $testcase->getDataGenerator()->create_user();
+        $DB->insert_record('mail_log', [
+            'userid' => $user->id,
+            'fromobj' => 'test@example.com',
+            'toaddress' => $user->email,
+            'fromaddress' => 'test@example.com',
+            'subject' => 'Reportbuilder test email',
+            'messagetext' => 'Reportbuilder test message',
+            'timesent' => time(),
+        ]);
+    }
+
 
     //
     //
